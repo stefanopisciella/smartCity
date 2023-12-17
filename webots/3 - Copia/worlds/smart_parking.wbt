@@ -1,0 +1,133 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/road/protos/Road.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/traffic/protos/ParkingLines.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Pavement.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/shapes/protos/TexturedBoxShape.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3at.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.5773502691896257 0.5773502691896257 0.5773502691896257 2.0943245915045035
+  position 20.46973687514638 -8.009785173912448 67.65545491619025
+  follow "Pioneer 3-AT"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Solid {
+  children [
+    Solid {
+      children [
+        Solid {
+          translation 38.23 -6.21 0
+          rotation 0 0 -1 -1.5707953071795862
+          children [
+            Solid {
+              translation 0 0 0.01
+              rotation 0.5773509358554485 0.5773489358556708 -0.5773509358554485 2.0944
+              children [
+                Solid {
+                  rotation 2.0826999999904767e-07 0.9999999999954274 3.0169599999862046e-06 3.14159
+                  children [
+                    TexturedBoxShape {
+                      size 0.01 0.5 0.5
+                      textureUrl [
+                        "../../../../Downloads/aruco markers/4x4_1000-3.png"
+                      ]
+                    }
+                  ]
+                  name "aruco_marker"
+                }
+              ]
+              name "aruco_markers"
+            }
+            Solid {
+              translation 0 0 1.31828e-05
+              rotation 0.5773509358554485 0.5773489358556708 -0.5773509358554485 2.0944
+              children [
+                Solid {
+                  rotation 2.0826999999904767e-07 0.9999999999954274 3.0169599999862046e-06 3.14159
+                  children [
+                    TexturedBoxShape {
+                      size 0.01 0.7 0.7
+                      textureUrl [
+                        ""
+                      ]
+                    }
+                  ]
+                  name "aruco_marker_background"
+                }
+              ]
+              name "aruco_markers_background"
+            }
+          ]
+          name "aruco_marker_base"
+        }
+        ParkingLines {
+          translation 1 -19.17 0.01
+          numberOfCarParks 16
+        }
+        Road {
+          translation 0 -16 0
+          name "lower_parking_road"
+          id "lower_parking_road"
+          numberOfLanes 1
+          rightBorder FALSE
+          wayPoints [
+            40 0 0
+            1 0 0
+          ]
+        }
+        Road {
+          translation 0 -8 0
+          name "upper_parking_road"
+          id "upper_parking_road"
+          roadBorderHeight 0
+          wayPoints [
+            40 0 0
+            1 0 0
+          ]
+          pavementAppearance Pavement {
+            type "tiles"
+          }
+        }
+        ParkingLines {
+          translation 1 -1.5 0.01
+          numberOfCarParks 16
+        }
+        Road {
+          name "upper_parking_lines"
+          id "upper_parking_lines"
+          numberOfLanes 1
+          leftBorder FALSE
+          wayPoints [
+            40 0 0
+            1 0 0
+          ]
+        }
+      ]
+      name "smart_parking"
+    }
+  ]
+  physics Physics {
+    mass 3000
+  }
+}
+Pioneer3at {
+  translation 5.18 0 0.01
+  controller "<extern>"
+  window "<none>"
+  extensionSlot [
+    Camera {
+      translation -0.13309999637464642 0.197000022540748 0.10999998917771947
+      rotation 0.57735160248454 -0.5773476024872425 -0.5773516025878573 2.094404999896689
+      width 1280
+      height 720
+    }
+  ]
+}

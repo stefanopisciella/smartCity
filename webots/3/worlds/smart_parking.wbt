@@ -1,0 +1,113 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/road/protos/Road.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/traffic/protos/ParkingLines.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Pavement.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/shapes/protos/TexturedBoxShape.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/obstacles/protos/OilBarrel.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3at.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/festo/robotino3/protos/Robotino3WebcamMountingSupport.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.4103052844663841 0.3601393276493674 0.8378241093566245 1.8733266687700265
+  position 37.01426676295078 -21.111663914168492 37.937174179004295
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Solid {
+  rotation 0 1 0 0
+  children [
+    Pioneer3at {
+      hidden translation_5 -0.1331 0.197 0.11
+      hidden translation_6 -0.1331 -0.197 0.11
+      hidden translation_7 0.1331 0.197 0.11
+      hidden translation_8 0.1331 -0.197 0.11
+      translation 38.72 -0.10001 0.0958491
+      rotation 0.7129467462048029 -0.7012181807871347 3.0928258659027673e-06 2.1287980804366846e-05
+      name "Pioneer3at"
+      controller "<extern>"
+      extensionSlot [
+        Robotino3WebcamMountingSupport {
+          extensionSlot [
+            Camera {
+              rotation -0.9831056944488314 0.1294279597735375 -0.1294279597735375 1.58783
+              width 1280
+              height 720
+            }
+          ]
+        }
+      ]
+    }
+    OilBarrel {
+      translation 8.44 0 0
+    }
+    Solid {
+      rotation 0.5773509358554485 0.5773489358556708 -0.5773509358554485 2.0944
+      children [
+        Solid {
+          translation 0 40.51 0
+          rotation 1 0 0 1.5708
+          children [
+            TexturedBoxShape {
+              size 0.01 1 1
+              textureUrl [
+                "../../../../Downloads/4x4_1000-1.png"
+              ]
+            }
+          ]
+          name "aruco_marker"
+        }
+      ]
+      name "aruco_markers"
+    }
+    ParkingLines {
+      translation 1 -19.17 0.01
+      numberOfCarParks 16
+    }
+    Road {
+      translation 0 -16 0
+      name "lower_parking_road"
+      id "lower_parking_road"
+      numberOfLanes 1
+      rightBorder FALSE
+      wayPoints [
+        40 0 0
+        1 0 0
+      ]
+    }
+    Road {
+      translation 0 -8 0
+      name "upper_parking_road"
+      id "upper_parking_road"
+      roadBorderHeight 0
+      wayPoints [
+        40 0 0
+        1 0 0
+      ]
+      pavementAppearance Pavement {
+        type "tiles"
+      }
+    }
+    ParkingLines {
+      translation 1 -1.5 0.01
+      numberOfCarParks 16
+    }
+    Road {
+      name "upper_parking_lines"
+      id "upper_parking_lines"
+      numberOfLanes 1
+      leftBorder FALSE
+      wayPoints [
+        40 0 0
+        1 0 0
+      ]
+    }
+  ]
+  name "smart_parking"
+}
