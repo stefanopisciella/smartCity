@@ -28,8 +28,8 @@ arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_100)
 arucoParams = cv2.aruco.DetectorParameters()
 ###
 
-front_left_motor_speed = 0.1 * MAX_SPEED
-front_right_motor_speed = 0.1 * MAX_SPEED
+front_left_motor_speed = 0 * MAX_SPEED
+front_right_motor_speed = 0 * MAX_SPEED
 
 while robot.step(TIMESTAMP) != -1:
     camera.enable(TIMESTAMP)
