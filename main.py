@@ -1,16 +1,16 @@
-# This is a sample Python script.
+import os.path
 
-# Press Maiusc+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+car_park_pos_file_path = './CarParkPos'
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+if os.path.isfile(car_park_pos_file_path):
+    if input("Do you want to pick parking stalls (y/n): ") == "y":
+        # user has to pick parking stall from scratch
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+        os.remove(car_park_pos_file_path)
+
+        with open("parking_space_picker.py") as script:
+            exec(script.read())
+else:
+    with open("parking_space_picker.py") as script:
+        exec(script.read())
