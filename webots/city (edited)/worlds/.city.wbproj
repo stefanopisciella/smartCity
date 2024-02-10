@@ -13,6 +13,7 @@ renderingDevicePerspectives: cctv_camera:cctv_robot:cctv_camera;1;0.289844;0;0
 renderingDevicePerspectives: cctv_camera_base:Pioneer 3-AT:camera;1;0.598437;0;0
 renderingDevicePerspectives: cctv_camera_base:Pioneer 3-AT:cctv_camera;1;0.197656;0;0
 renderingDevicePerspectives: cctv_robot:cctv_camera;1;0.2125;0;0
+renderingDevicePerspectives: pioneer:camera;1;0.197656;0;0
 renderingDevicePerspectives: traffic light big pole:Pioneer 3-AT:camera;1;1;0;0
 renderingDevicePerspectives: traffic light big pole:Pioneer 3-AT:cctv_camera;1;0.598437;0;0
 renderingDevicePerspectives: traffic light big pole:cctv_robot:cctv_camera;1;0.598437;0;0
