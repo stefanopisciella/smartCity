@@ -1018,7 +1018,7 @@ GenericTrafficLight {
   startGreen FALSE
   greenTime 10
   redTime 10
-  state "green"
+  state "red"
 }
 CrossRoadsTrafficLight {
   translation 45 -45 0
@@ -1937,7 +1937,7 @@ TeslaModel3 {
   translation 140.857 -18.125 0.21314
   rotation 0.003985381025380879 -0.003935433268651264 0.9999843144285168 1.58342397393508
   name "car"
-  controller "CarController"
+  controller "<none>"
   sensorsSlotFront [
     Camera {
       name "moving_car_camera"

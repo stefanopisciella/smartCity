@@ -24,7 +24,7 @@ class CarController(Driver):
             # END camera
 
             # START move car
-            self.setCruisingSpeed(2)  # Set cruising speed to 10 m/s
+            self.setCruisingSpeed(10)  # Set cruising speed to 10 m/s
             self.setSteeringAngle(0)    # Set steering angle to 0 (straight)
             # END move car
 
