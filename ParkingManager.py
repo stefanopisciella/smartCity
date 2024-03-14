@@ -17,7 +17,7 @@ class ParkingManager:
 
         self.x_coordinate_of_current_centerline_left_corner = None
 
-        self.parking_row_id = 0
+        self.parking_row_id = 1
         # END variables used only in click_parking_row_corners() and click_centerline_corners()
 
         self.parking_img = cns.VIRTUAL_CCTV_CAMERA_IMG_PATH
@@ -26,48 +26,77 @@ class ParkingManager:
 
         self.detected_cars = []
 
-        # pos STRUCTURE: pos['X_coordinate', 'Y_coordinate', 'is_a_parking_stall_corner']
-        # centerlinePos STRUCTURE: centerlinePos['X_coordinate_of_the_left_corner', 'X_coordinate_of_the_right_corner', 'Y_coordinate']
+        # centerlinePos: centerlinePos['X_coordinate_of_the_left_corner', 'X_coordinate_of_the_right_corner', 'Y_coordinate']
+        # parkingStallsPos: ['id', 'x1', 'x2', 'parking_row_id']
+        # parkingRowsPos: ['id', 'x1', 'y1', 'x2', 'y2']
 
-        # START importing the positions from CarParkPos
+        # START importing the positions from ParkingStallsPos
         try:
-            # CarParkPos already exists
-            with open('CarParkPos', 'rb') as f:
-                self.posList = pickle.load(f)
+            # ParkingStallsPos already exists
+            with open(cns.PARKING_STALLS_POS_PATH, 'rb') as f:
+                self.stalls = pickle.load(f)
         except:
-            # CarParkPos doesn't exist yet
-            self.posList = []  # creating new empty list
-        # END importing the positions from CarParkPos
+            # ParkingStallsPos doesn't exist yet
+            self.stalls = []  # creating new empty list
+        # END importing the positions from ParkingStallsPos
 
         # START importing the positions from CenterlinePos
         try:
             # CenterlinePos already exists
             with open('CenterlinePos', 'rb') as f:
-                self.centerlinePos = pickle.load(f)
+                self.centerlines = pickle.load(f)
         except:
             # CenterlinePos doesn't exist yet
-            self.centerlinePos = []  # creating new empty list
+            self.centerlines = []  # creating new empty list
         # END importing the positions from CenterlinePos
+
+        # START importing the positions from ParkingRowsPos
+        try:
+            # ParkingRowsPos already exists
+            with open('ParkingRowsPos', 'rb') as f:
+                self.parkingRows = pickle.load(f)
+        except:
+            # ParkingRowsPos doesn't exist yet
+            self.parkingRows = []  # creating new empty list
+        # END importing the positions from ParkingRowsPos
 
     def click_parking_row_corners(self, events, x, y, flags, params):
         if events == cv2.EVENT_LBUTTONDOWN:
             # user has left-clicked ==> add the clicked position to the list
 
-            self.posList.append((x, y, False))
-
             self.parking_row_corner_num += 1
+
+            if self.parking_row_corner_num == 1:
+                parking_row = {
+                    "id": self.parking_row_id,
+                    "x1": x,
+                    "y1": y
+                }
+                self.parkingRows.append(parking_row)
 
             if self.parking_row_corner_num == 2:
                 # it has a sufficient number of corners for splitting the parking row in more parking stalls
-                current_parking_row_left_corner = (self.posList[-2][0], self.posList[-2][1])  # posList[-2] for
-                # retrieving the second-last inserted position
 
+                self.parkingRows[-1]["x2"] = x
+                self.parkingRows[-1]["y2"] = y
+
+                current_parking_row_left_corner = (self.parkingRows[-1]["x1"], self.parkingRows[-1]["y1"])
                 current_stall_left_corner = (current_parking_row_left_corner[0], current_parking_row_left_corner[1])
+                stall_id = 1
+                while current_stall_left_corner[0] <= x:
+                    stall = {
+                        "id": stall_id,
+                        "x1": current_stall_left_corner[0],
+                        "y1": current_stall_left_corner[1],
+                        "parking_row_id": self.parking_row_id
+                    }
+                    self.stalls.append(stall)
 
-                while current_stall_left_corner[0] < x:
-                    self.posList.append((current_stall_left_corner[0], current_stall_left_corner[1], True))
                     current_stall_left_corner = (current_stall_left_corner[0] + self.width, current_stall_left_corner[1])
 
+                    stall_id += 1
+
+                self.parking_row_id += 1
                 self.parking_row_corner_num = 0  # so that can be added others parking rows
 
         """
@@ -82,8 +111,13 @@ class ParkingManager:
         """
 
         # START saving the positions in the file
-        with open('CarParkPos', 'wb') as f:
-            pickle.dump(self.posList, f)
+        with open('ParkingStallsPos', 'wb') as f:
+            pickle.dump(self.stalls, f)
+        # END saving the positions in the file
+
+        # START saving the positions in the file
+        with open('ParkingRowsPos', 'wb') as f:
+            pickle.dump(self.parkingRows, f)
         # END saving the positions in the file
 
     def click_centerline_corners(self, events, x, y, flags, params):
@@ -96,7 +130,7 @@ class ParkingManager:
                 return
 
             if self.centerline_corner_num == 1:
-                self.centerlinePos.append((self.x_coordinate_of_current_centerline_left_corner, x, y))  # here x is
+                self.centerlines.append((self.x_coordinate_of_current_centerline_left_corner, x, y))  # here x is
                 # relative to the right corner of the centerline
                 self.centerline_corner_num = 0
 
@@ -104,21 +138,21 @@ class ParkingManager:
         if events == cv2.EVENT_RBUTTONDOWN:
             # user has right-clicked ==> remove the clicked position from the list
     
-            for i, pos in enumerate(centerlinePos):  # looping the saved parking stalls
+            for i, pos in enumerate(centerlines):  # looping the saved parking stalls
                 x1, y1 = pos
                 if x1 < x < x1 + width and y1 < y < y1 + height:
                     # the clicked position belongs to the current parking stall area
-                    centerlinePos.pop(i)
+                    centerlines.pop(i)
         """
 
         # START saving the positions in the file
         with open('CenterlinePos', 'wb') as f:
-            pickle.dump(self.centerlinePos, f)
+            pickle.dump(self.centerlines, f)
         # END saving the positions in the file
 
     def get_parking_stall_positions(self):
-        if self.posList is not None and len(self.posList) > 0:
-            return self.posList
+        if self.stalls is not None and len(self.stalls) > 0:
+            return self.stalls
 
     def get_closest_free_parking_stall(self):
         pass
@@ -128,14 +162,13 @@ class ParkingManager:
             img = cv2.imread(self.parking_img)
 
             # START drawing all parking stalls
-            for pos in self.posList:
-                if pos[2]:
-                    # it only considers corners relative to parking stalls and not those relative to parking rows
-                    cv2.rectangle(img, (pos[0], pos[1]), (pos[0] + self.width, pos[1] + self.height), (255, 0, 255), 2)
+            for pos in self.stalls:
+                # it only considers corners relative to parking stalls and not those relative to parking rows
+                cv2.rectangle(img, (pos["x1"], pos["y1"]), (pos["x1"] + self.width, pos["y1"] + self.height), (255, 0, 255), 2)
             # END drawing all parking stalls
 
             # START drawing all centerlines
-            for pos in self.centerlinePos:
+            for pos in self.centerlines:
                 cv2.line(img, (pos[0], pos[2]), (pos[1], pos[2]), (0, 0, 255), 2)
             # END drawing all centerlines
 
@@ -156,25 +189,73 @@ class ParkingManager:
                 return
 
     def detect_cars(self):
-        self.detected_cars = self.vod.detect()
+        detected_objects = self.vod.detect()
+
+        for detected_object in detected_objects:
+            if detected_object["class"] == 67:
+                # the current detected_object is a car
+                self.detected_cars.append(detected_object)
 
     def get_free_parking_stalls(self):
         """
-        free_parking_stalls = []
+        free_stalls = []
 
         # print("OHHHHHH", detected_cars[0]["class"])
         for car in self.detected_cars:
             if car["class"] != 67:
                 continue
 
-            for stall in self.posList:
-                if car["box"]["x1"]
+            for stall in self.stalls:
+                if car["box"]["x1"] > stall["x1"] and
+                    car["box"]["y1"] < stall["y1"] and
+                    car["box"][""]  :
         """
 
-    def get_occupied_parking_stall(self):
-        pass
+    def get_all_parking_stalls(self):
+        occupied_stalls = []
+        free_stalls = []
+
+        """
+        for car in self.detected_cars:
+            for stall in self.stalls:
+                if self.compute_intersection_between_car_box_and_stall_box(car["box"], stall) > 100:  # 100 pixels
+                    occupied_stalls.append(stall)
+
+        return occupied_stalls
+        """
+        for stall in self.stalls:
+            current_stall_is_occupied = False
+
+            for car in self.detected_cars:
+                if self.compute_intersection_between_car_box_and_stall_box(car["box"], stall) > 100:  # 100 pixels
+                    occupied_stalls.append(stall)
+                    current_stall_is_occupied = True
+
+            if current_stall_is_occupied is False:
+                free_stalls.append(stall)
+
+        return free_stalls, occupied_stalls
+
+    def draw_all_parking_stalls(self, img):
+        free_stalls, occupied_stalls = self.get_all_parking_stalls()
+
+        for stall in free_stalls:
+            cv2.rectangle(img, (stall["x1"], stall["y1"]), (stall["x1"] + self.width, stall["y1"] + self.height), (0, 255, 0), 2)  # green rectangle
+
+        for stall in occupied_stalls:
+            cv2.rectangle(img, (stall["x1"], stall["y1"]), (stall["x1"] + self.width, stall["y1"] + self.height), (0, 0, 255), 2)  # red rectangle
+
+    def compute_intersection_between_car_box_and_stall_box(self, car_box, stall_box):
+        # intersection_x1 and intersection_y1 are the coordinates for the top-left corner of the intersection
+        intersection_x1 = max(car_box["x1"], stall_box["x1"])
+        intersection_y1 = max(car_box["y1"], stall_box["y1"])
+
+        # intersection_x2 and intersection_y2 are the coordinates for the bottom-right corner of the intersection
+        intersection_x2 = min(car_box["x2"], stall_box["x1"] + self.width)
+        intersection_y2 = min(car_box["y2"], stall_box["y1"] + self.height)
+
+        intersection_area = max(0, intersection_x2 - intersection_x1 + 1) * max(0, intersection_y2 - intersection_y1 + 1)
+
+        return intersection_area
 
 
-if __name__ == "__main__":
-    pm = ParkingManager()
-    pm.pick_corners(True)
