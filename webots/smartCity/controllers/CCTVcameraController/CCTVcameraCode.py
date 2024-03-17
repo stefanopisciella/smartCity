@@ -25,17 +25,12 @@ class CCTVcameraController(Robot):
             self.camera.getImage()
             self.camera.saveImage(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH, 100)
 
-            """
-            img = cv2.imread(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH, cv2.IMREAD_UNCHANGED)
-            cv2.imshow("CCTV camera", img)
-            """
+            self.pm.read_cctv_camera_img()
+            self.pm.detect_cars()
+            self.pm.draw_car_boxes()
+            self.pm.draw_all_parking_stalls()
 
-            if pt.isfile(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH):
-                img = cv2.imread(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH, cv2.IMREAD_UNCHANGED)
-                self.pm.detect_cars()
-                self.pm.draw_all_parking_stalls(img)
-
-                cv2.imshow("CCTV camera", img)
+            cv2.imshow("CCTV camera", self.pm.get_annotated_img())
 
             if cv2.waitKey(1) == 27:
                 # the "ESC" has been pressed => stop the execution of the robot_controller

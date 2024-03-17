@@ -1,5 +1,6 @@
 import cv2
 import pickle
+import os.path as pt
 
 from virtual.VirtualObjectDetection import VirtualObjectDetection
 import constants as cns
@@ -20,7 +21,9 @@ class ParkingManager:
         self.parking_row_id = 1
         # END variables used only in click_parking_row_corners() and click_centerline_corners()
 
-        self.parking_img = cns.VIRTUAL_CCTV_CAMERA_IMG_PATH
+        self.cctv_camera_img = None
+        # CHECK
+        # self.annotated_cctv_camera_img = cv2.imread(cns.VIRTUAL_ANNOTATED_CCTV_CAMERA_IMG_PATH, cv2.IMREAD_UNCHANGED)
 
         self.vod = VirtualObjectDetection(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH)
 
@@ -92,7 +95,8 @@ class ParkingManager:
                     }
                     self.stalls.append(stall)
 
-                    current_stall_left_corner = (current_stall_left_corner[0] + self.width, current_stall_left_corner[1])
+                    current_stall_left_corner = (
+                    current_stall_left_corner[0] + self.width, current_stall_left_corner[1])
 
                     stall_id += 1
 
@@ -159,17 +163,16 @@ class ParkingManager:
 
     def pick_corners(self, picking_parking_row_corners):
         while True:
-            img = cv2.imread(self.parking_img)
-
             # START drawing all parking stalls
             for pos in self.stalls:
                 # it only considers corners relative to parking stalls and not those relative to parking rows
-                cv2.rectangle(img, (pos["x1"], pos["y1"]), (pos["x1"] + self.width, pos["y1"] + self.height), (255, 0, 255), 2)
+                cv2.rectangle(self.cctv_camera_img, (pos["x1"], pos["y1"]),
+                              (pos["x1"] + self.width, pos["y1"] + self.height), (255, 0, 255), 2)
             # END drawing all parking stalls
 
             # START drawing all centerlines
             for pos in self.centerlines:
-                cv2.line(img, (pos[0], pos[2]), (pos[1], pos[2]), (0, 0, 255), 2)
+                cv2.line(self.cctv_camera_img, (pos[0], pos[2]), (pos[1], pos[2]), (0, 0, 255), 2)
             # END drawing all centerlines
 
             if picking_parking_row_corners:
@@ -179,7 +182,7 @@ class ParkingManager:
                 window_name = "Centerline picker"
                 callback_function = self.click_centerline_corners
 
-            cv2.imshow(window_name, img)
+            cv2.imshow(window_name, self.cctv_camera_img)
 
             cv2.setMouseCallback(window_name, callback_function)
 
@@ -189,6 +192,8 @@ class ParkingManager:
                 return
 
     def detect_cars(self):
+        self.detected_cars.clear()  # clear detected_cars populated in the previous detection
+
         detected_objects = self.vod.detect()
 
         for detected_object in detected_objects:
@@ -196,33 +201,10 @@ class ParkingManager:
                 # the current detected_object is a car
                 self.detected_cars.append(detected_object)
 
-    def get_free_parking_stalls(self):
-        """
-        free_stalls = []
-
-        # print("OHHHHHH", detected_cars[0]["class"])
-        for car in self.detected_cars:
-            if car["class"] != 67:
-                continue
-
-            for stall in self.stalls:
-                if car["box"]["x1"] > stall["x1"] and
-                    car["box"]["y1"] < stall["y1"] and
-                    car["box"][""]  :
-        """
-
     def get_all_parking_stalls(self):
         occupied_stalls = []
         free_stalls = []
 
-        """
-        for car in self.detected_cars:
-            for stall in self.stalls:
-                if self.compute_intersection_between_car_box_and_stall_box(car["box"], stall) > 100:  # 100 pixels
-                    occupied_stalls.append(stall)
-
-        return occupied_stalls
-        """
         for stall in self.stalls:
             current_stall_is_occupied = False
 
@@ -236,14 +218,19 @@ class ParkingManager:
 
         return free_stalls, occupied_stalls
 
-    def draw_all_parking_stalls(self, img):
+    def draw_all_parking_stalls(self):
         free_stalls, occupied_stalls = self.get_all_parking_stalls()
 
         for stall in free_stalls:
-            cv2.rectangle(img, (stall["x1"], stall["y1"]), (stall["x1"] + self.width, stall["y1"] + self.height), (0, 255, 0), 2)  # green rectangle
+            cv2.rectangle(self.cctv_camera_img, (stall["x1"], stall["y1"]),
+                          (stall["x1"] + self.width, stall["y1"] + self.height), (0, 255, 0), 2)  # green rectangle
 
         for stall in occupied_stalls:
-            cv2.rectangle(img, (stall["x1"], stall["y1"]), (stall["x1"] + self.width, stall["y1"] + self.height), (0, 0, 255), 2)  # red rectangle
+            cv2.rectangle(self.cctv_camera_img, (stall["x1"], stall["y1"]),
+                          (stall["x1"] + self.width, stall["y1"] + self.height), (0, 0, 255), 2)  # red rectangle
+
+        # CHECK
+        # cls.annotate_img(self.cctv_camera_img)
 
     def compute_intersection_between_car_box_and_stall_box(self, car_box, stall_box):
         # intersection_x1 and intersection_y1 are the coordinates for the top-left corner of the intersection
@@ -258,4 +245,21 @@ class ParkingManager:
 
         return intersection_area
 
+    def draw_car_boxes(self):
+        for car in self.detected_cars:
+            cv2.rectangle(self.cctv_camera_img, (int(car["box"]["x1"]), int(car["box"]["y1"])),
+                          (int(car["box"]["x2"]), int(car["box"]["y2"])), (255, 0, 0), 1)  # blue rectangle
 
+    def get_annotated_img(self):
+        return self.cctv_camera_img
+
+    def read_cctv_camera_img(self):
+        if pt.isfile(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH):
+            self.cctv_camera_img = cv2.imread(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH, cv2.IMREAD_UNCHANGED)
+
+    def set_cctv_camera_img(self, img):
+        self.cctv_camera_img = img
+
+    @staticmethod
+    def annotate_img(cls, img):
+        cv2.imwrite(cns.VIRTUAL_ANNOTATED_CCTV_CAMERA_IMG_PATH, img)

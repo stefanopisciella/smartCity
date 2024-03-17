@@ -3,7 +3,7 @@ import os.path as pt
 
 PROJECT_ROOT_PATH = os.environ.get('smartCity')
 
-
 VIRTUAL_CCTV_CAMERA_IMG_PATH = pt.join(PROJECT_ROOT_PATH, "virtual", "cctvCamera.jpg")
+VIRTUAL_ANNOTATED_CCTV_CAMERA_IMG_PATH = pt.join(PROJECT_ROOT_PATH, "virtual", "AnnotatedCctvCamera.jpg")
 YOLO_MODEL_PATH = pt.join(PROJECT_ROOT_PATH, "YOLOv8x.pt")
 PARKING_STALLS_POS_PATH = pt.join(PROJECT_ROOT_PATH, "ParkingStallsPos")
