@@ -39,7 +39,7 @@ class CarController(Driver):
 
 
 if __name__ == "__main__":
-    driver = CarController("Tesla")
+    driver = CarController("Citroen")
     driver.act()
 
 

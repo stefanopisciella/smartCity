@@ -12,6 +12,8 @@ class ParkingManager:
         self.width = 57  # in pixels
         self.height = 113  # in pixels
 
+        self.minimum_confidence_threshold = 0.5
+
         # START variables used only in click_parking_row_corners() and click_centerline_corners()
         self.parking_row_corner_num = 0
         self.centerline_corner_num = 0
@@ -22,8 +24,6 @@ class ParkingManager:
         # END variables used only in click_parking_row_corners() and click_centerline_corners()
 
         self.cctv_camera_img = None
-        # CHECK
-        # self.annotated_cctv_camera_img = cv2.imread(cns.VIRTUAL_ANNOTATED_CCTV_CAMERA_IMG_PATH, cv2.IMREAD_UNCHANGED)
 
         self.vod = VirtualObjectDetection(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH)
 
@@ -197,7 +197,7 @@ class ParkingManager:
         detected_objects = self.vod.detect()
 
         for detected_object in detected_objects:
-            if detected_object["class"] == 67:
+            if detected_object["class"] == 67 and detected_object["confidence"] > self.minimum_confidence_threshold:
                 # the current detected_object is a car
                 self.detected_cars.append(detected_object)
 
@@ -229,9 +229,6 @@ class ParkingManager:
             cv2.rectangle(self.cctv_camera_img, (stall["x1"], stall["y1"]),
                           (stall["x1"] + self.width, stall["y1"] + self.height), (0, 0, 255), 2)  # red rectangle
 
-        # CHECK
-        # cls.annotate_img(self.cctv_camera_img)
-
     def compute_intersection_between_car_box_and_stall_box(self, car_box, stall_box):
         # intersection_x1 and intersection_y1 are the coordinates for the top-left corner of the intersection
         intersection_x1 = max(car_box["x1"], stall_box["x1"])
@@ -247,19 +244,40 @@ class ParkingManager:
 
     def draw_car_boxes(self):
         for car in self.detected_cars:
-            cv2.rectangle(self.cctv_camera_img, (int(car["box"]["x1"]), int(car["box"]["y1"])),
-                          (int(car["box"]["x2"]), int(car["box"]["y2"])), (255, 0, 0), 1)  # blue rectangle
+            confidence = "%.2f" % car["confidence"]  # approximation to two decimal places
 
-    def get_annotated_img(self):
+            car_box_top_left_corner = (int(car["box"]["x1"]), int(car["box"]["y1"]))
+            cv2.rectangle(self.cctv_camera_img, car_box_top_left_corner,
+                          (int(car["box"]["x2"]), int(car["box"]["y2"])), (255, 0, 0), 2)  # blue rectangle
+
+            # START setting the text properties
+            text = "Car"
+            position = car_box_top_left_corner
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 1
+            color = (255, 255, 255)
+            thickness = 2  # line thickness
+            # END setting the text properties
+
+            """ CHECK
+            # START creating a rectangle for the background of the text
+            (text_width, text_height) = cv2.getTextSize(text, font, font_scale, thickness)[0]  # Get the size of the
+            # text box
+
+            rectangle_bgr = (255, 0, 0)  # blue color
+            rectangle_top_left = (position[0], position[1] - text_height)
+            rectangle_bottom_right = (position[0] + text_width, position[1] + text_height)
+
+            cv2.rectangle(self.cctv_camera_img, rectangle_top_left, rectangle_bottom_right, rectangle_bgr, -1)
+            # END creating a rectangle for the background of the text
+            """
+
+            cv2.putText(self.cctv_camera_img, text + " " + confidence, position, font, font_scale, color, thickness, cv2.LINE_AA)  # writing the
+            # class of the detected object
+
+    def get_annotated_cctv_camera_img(self):
         return self.cctv_camera_img
 
     def read_cctv_camera_img(self):
         if pt.isfile(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH):
             self.cctv_camera_img = cv2.imread(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH, cv2.IMREAD_UNCHANGED)
-
-    def set_cctv_camera_img(self, img):
-        self.cctv_camera_img = img
-
-    @staticmethod
-    def annotate_img(cls, img):
-        cv2.imwrite(cns.VIRTUAL_ANNOTATED_CCTV_CAMERA_IMG_PATH, img)

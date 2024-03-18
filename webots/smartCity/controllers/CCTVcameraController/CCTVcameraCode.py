@@ -30,7 +30,7 @@ class CCTVcameraController(Robot):
             self.pm.draw_car_boxes()
             self.pm.draw_all_parking_stalls()
 
-            cv2.imshow("CCTV camera", self.pm.get_annotated_img())
+            cv2.imshow("CCTV camera", self.pm.get_annotated_cctv_camera_img())
 
             if cv2.waitKey(1) == 27:
                 # the "ESC" has been pressed => stop the execution of the robot_controller

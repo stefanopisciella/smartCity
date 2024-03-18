@@ -11,8 +11,14 @@ class VirtualObjectDetection:
         self.frame_path = frame_path
 
     def detect(self):
-        # Run YOLOv8 inference on the frame
-        results = self.model(self.frame_path)
+        results = self.model(self.frame_path)  # Run YOLOv8 inference on the frame
+        detected_objects = json.loads(results[0].tojson())
+
+        # print(results[0].tojson())  # for debugging
+        return detected_objects
+
+        # annotated_frame = results[0].plot()
+        # return annotated_frame
 
         # CHECK
         # self.model.cuda()
@@ -32,15 +38,12 @@ class VirtualObjectDetection:
         print(results[0].boxes)
         """
 
-
         # print(detected_objects[0]["name"], detected_objects[0]["class"])
         # print(results[0].boxes.cls)
         # print("confidence", results[0].boxes.conf)
 
-        detected_objects = json.loads(results[0].tojson())
-        return detected_objects
-
-        # annotated_frame = results[0].plot()
-        # return annotated_frame
+        # print(detected_objects[0]["name"], detected_objects[0]["class"])
+        # print(results[0].boxes.cls)
+        # print("confidence", results[0].boxes.conf)
 
         
