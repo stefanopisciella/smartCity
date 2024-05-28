@@ -393,7 +393,7 @@ class ParkingManager:
                 # CHECK
                 # lock.release()
 
-            time.sleep(0.5)  # !!! SLEEP
+            time.sleep(1)  # !!! SLEEP
 
     def guide_the_car_that_is_about_to_park(self):
         if not self.find_the_car_that_is_about_to_park():
