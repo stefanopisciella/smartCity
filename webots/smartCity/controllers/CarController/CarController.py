@@ -1,4 +1,6 @@
 from vehicle.driver import Driver
+from vehicle.car import Car
+
 import cv2
 
 import paho.mqtt.client as mqtt
@@ -9,7 +11,7 @@ import math
 import constants as cns
 
 
-class CarController(Driver):
+class CarController(Car):
     def __init__(self, car_brand_name, max_steering_angle):
         super().__init__()
         self.car_brand_name = car_brand_name
@@ -36,8 +38,9 @@ class CarController(Driver):
         parking_entrance_crossed = False
 
         while driver.step() != 1:
-            # self.rotate(10, True)
+            self.rotate(10, False)
 
+            """
             if self.message_queue.empty():
                 if not parking_entrance_crossed:
                     self.go_straight(5)
@@ -69,6 +72,7 @@ class CarController(Driver):
                 self.stop()
 
                 break
+            """
 
         self.mqttc.loop_stop()  # stop the loop
 
@@ -87,7 +91,9 @@ class CarController(Driver):
         if steering_angle is None:
             steering_angle = self.max_steering_angle if turn_to_the_right is True else -self.max_steering_angle
 
-        driver.setSteeringAngle(steering_angle)
+        self.setRightSteeringAngle(steering_angle)  # direct setting of the steering angle for the right wheel
+        self.setLeftSteeringAngle(steering_angle)  # direct setting of the steering angle for the left wheel
+
         self.setCruisingSpeed(speed)
 
 
