@@ -43,6 +43,8 @@ class ParkingManager:
 
         self.current_driving_phase = 1
 
+        self.required_distance_to_brake = 22  # expressed in pixels
+
         self.mqtt = MQTTClient(cns.MQTT_HOSTNAME, cns.MQTT_TOPIC)
 
         # centerlinePos: centerlinePos['X_coordinate_of_the_left_corner', 'X_coordinate_of_the_right_corner', 'Y_coordinate']
@@ -358,10 +360,10 @@ class ParkingManager:
 
                     # annotated_frame = results[0].plot() # Visualize the results on the frame
 
-                    # CHECK
-                    # print(f"BOOOMER {results[0]}")
-
                     self.detected_objects = json.loads(results[0].tojson())
+
+                    # CHECK
+                    # print(results[0].tojson())
 
                     self.read_frame()  # without this call all the drawing methods couldn't draw on the frame
 
@@ -400,27 +402,26 @@ class ParkingManager:
             return
 
         if self.current_driving_phase == 1:
-            self.guide_the_car_until_the_centerline()  # 1° phase
+            self.guide_the_car_until_the_target(548)  # 1° phase
         elif self.current_driving_phase == 2:
-            self.rotate_the_car_90_degrees()  # 2° phase
+            self.rotate_the_car()  # 2° phase
 
-    def guide_the_car_until_the_centerline(self):
-        # for the moment I will only consider the lowest centerline
-        centerline = self.centerlines[0]
-        centerline_y_coordinate = centerline[2]
-
-        if self.car_about_to_park["box"]["y1"] <= centerline_y_coordinate:
-            # the car that is about to park has crossed the centerline ==> it has to stop, and it has to jump to the next phase
+    def guide_the_car_until_the_target(self, target_y_coordinate):
+        if self.car_about_to_park["box"]["y1"] <= target_y_coordinate + self.required_distance_to_brake:
+            # the car that is about to park has crossed the target ==> it has to stop, and it has to jump to the next phase
             self.send_stop()
             self.current_driving_phase += 1
             return  # ==> it goes to the next phase
         else:
-            # the car that is about to park has not crossed the centerline yet ==> it has to continue to move to reach it
+            # the car that is about to park has not crossed the target yet ==> it has to continue to move to reach it
             self.send_go_straight()
 
-    def rotate_the_car_90_degrees(self):
+    def rotate_the_car(self):
         # for the moment I assume that the car can only rotate to its right
-        pass
+        self.send_rotate(True)
+
+        self.current_driving_phase += 1
+        return  # ==> it goes to the next phase
 
     def find_the_car_that_is_about_to_park(self):
         if not self.check_if_the_car_about_to_park_has_been_already_detected():
@@ -535,6 +536,12 @@ class ParkingManager:
 
     def send_parking_entrance_crossed(self):
         self.mqtt.publish_message(cns.PARKING_ENTRANCE_CROSSED)
+
+    def send_rotate(self, to_the_right):
+        if to_the_right:
+            self.mqtt.publish_message(cns.ROTATE_90_DEGREES_TO_RIGHT)
+        else:
+            self.mqtt.publish_message(cns.ROTATE_90_DEGREES_TO_LEFT)
 
     @staticmethod
     def run(lock):

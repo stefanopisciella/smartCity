@@ -1,3 +1,5 @@
+import time
+
 from vehicle.driver import Driver
 from vehicle.car import Car
 
@@ -38,12 +40,11 @@ class CarController(Car):
         parking_entrance_crossed = False
 
         while driver.step() != 1:
-            self.rotate(10, False)
+            # self.rotate(5, True)
 
-            """
             if self.message_queue.empty():
                 if not parking_entrance_crossed:
-                    self.go_straight(5)
+                    self.go_straight(2)
             else:
                 last_received_message = self.message_queue.get()
                 print(f"Last received message: {last_received_message}")
@@ -72,7 +73,6 @@ class CarController(Car):
                 self.stop()
 
                 break
-            """
 
         self.mqttc.loop_stop()  # stop the loop
 
