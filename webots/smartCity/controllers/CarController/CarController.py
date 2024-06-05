@@ -1,5 +1,3 @@
-import time
-
 from vehicle.driver import Driver
 from vehicle.car import Car
 
@@ -24,6 +22,9 @@ class CarController(Car):
         self.camera.enable(17)  # Enable the camera with a sampling period of 10ms
         self.cameraImgPath = cns.VIRTUAL_CAR_CAMERA_IMG_PATH
 
+        self.compass = self.getDevice('compass')
+        self.compass.enable(int(self.getBasicTimeStep()))
+
         self.message_queue = queue.Queue()
 
         self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
@@ -37,44 +38,55 @@ class CarController(Car):
         self.message_queue.put(msg.payload.decode('utf-8'))
 
     def act(self):
-        parking_entrance_crossed = False
+        # CHECK
+        # self.rotate(5, True)
+        try:
+            parking_entrance_crossed = False
 
-        while driver.step() != 1:
-            # self.rotate(5, True)
+            while self.step() != -1:
+                if self.message_queue.empty():
+                    if not parking_entrance_crossed:
+                        self.go_straight(2)
+                else:
+                    last_received_message = self.message_queue.queue[0]
+                    print(f"Last received message: {last_received_message}")
 
-            if self.message_queue.empty():
-                if not parking_entrance_crossed:
-                    self.go_straight(2)
-            else:
-                last_received_message = self.message_queue.get()
-                print(f"Last received message: {last_received_message}")
+                    if last_received_message == cns.PARKING_ENTRANCE_CROSSED:
+                        parking_entrance_crossed = True
 
-                if last_received_message == cns.PARKING_ENTRANCE_CROSSED:
-                    parking_entrance_crossed = True
-                elif last_received_message == cns.STOP:
-                    self.stop()
-                elif last_received_message == cns.GO_STRAIGHT:
-                    self.go_straight(5)
-                elif last_received_message == cns.ROTATE_90_DEGREES_TO_RIGHT:
-                    self.rotate(10, True)
+                        self.message_queue.get()  # pop this message from the queue
+                    elif last_received_message == cns.STOP:
+                        self.stop()
+
+                        self.message_queue.get()  # pop this message from the queue
+                    elif last_received_message == cns.GO_STRAIGHT:
+                        self.go_straight(5)
+
+                        self.message_queue.get()  # pop this message from the queue
+                    elif last_received_message == cns.ROTATE_90_DEGREES_TO_RIGHT:
+                        self.rotate_90_degrees(10, True)
 
                 # START camera
-            self.camera.getImage()
-            self.camera.saveImage(self.cameraImgPath, 100)
-            img = cv2.imread(self.cameraImgPath, cv2.IMREAD_UNCHANGED)
-            cv2.imshow(self.car_brand_name + " camera", img)
-            # END camera
+                self.camera.getImage()
+                self.camera.saveImage(self.cameraImgPath, 100)
+                img = cv2.imread(self.cameraImgPath, cv2.IMREAD_UNCHANGED)
+                cv2.imshow(self.car_brand_name + " camera", img)
+                # END camera
 
-            if cv2.waitKey(1) == 27:
-                # the "ESC" has been pressed => stop the execution of the robot_controller
-                self.camera.disable()
-                cv2.destroyWindow(self.car_brand_name + " camera")
+                if cv2.waitKey(1) == 27:
+                    # the "ESC" has been pressed => stop the execution of the robot_controller
+                    self.camera.disable()
+                    cv2.destroyWindow(self.car_brand_name + " camera")
 
-                self.stop()
+                    self.stop()
 
-                break
+                    break
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            self.mqttc.loop_stop()
+            raise
 
-        self.mqttc.loop_stop()  # stop the loop
+        # self.mqttc.loop_stop()  # stop the loop
 
     def stop(self):
         # CHECK
@@ -95,6 +107,21 @@ class CarController(Car):
         self.setLeftSteeringAngle(steering_angle)  # direct setting of the steering angle for the left wheel
 
         self.setCruisingSpeed(speed)
+
+    def rotate_90_degrees(self, speed, turn_to_the_right, steering_angle=None):
+        if self.get_car_orientation_in_degrees() == 0:  # CHECK 0 for the moment, later I have to edit it
+            # the car has finished the maneuver of rotation
+            self.message_queue.get()  # pop the first value of the queue
+            self.stop()
+        else:
+            # the car hasn't finished yet the maneuver of rotation
+            self.rotate(speed, turn_to_the_right, steering_angle)
+
+    def get_car_orientation_in_degrees(self):
+        compass_values = self.compass.getValues()
+
+        orientation = math.atan2(compass_values[0], compass_values[1])
+        return int(math.degrees(orientation))
 
 
 if __name__ == "__main__":
