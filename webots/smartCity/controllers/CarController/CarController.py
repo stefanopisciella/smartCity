@@ -17,6 +17,7 @@ class CarController(Car):
         self.car_brand_name = car_brand_name
 
         self.max_steering_angle = max_steering_angle
+        self.required_angle_to_brake = 6  # expressed in degrees. Precisely 6,5520015705 degrees
 
         self.camera = self.getDevice("moving_car_camera")
         self.camera.enable(17)  # Enable the camera with a sampling period of 10ms
@@ -109,7 +110,7 @@ class CarController(Car):
         self.setCruisingSpeed(speed)
 
     def rotate_90_degrees(self, speed, turn_to_the_right, steering_angle=None):
-        if self.get_car_orientation_in_degrees() == 0:  # CHECK 0 for the moment, later I have to edit it
+        if self.get_car_orientation_in_degrees() == 0 + self.required_angle_to_brake:  # CHECK 0 for the moment, later I have to edit it
             # the car has finished the maneuver of rotation
             self.message_queue.get()  # pop the first value of the queue
             self.stop()
