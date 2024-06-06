@@ -1,9 +1,9 @@
-from vehicle.driver import Driver
 from vehicle.car import Car
 
 import cv2
 
 import paho.mqtt.client as mqtt
+from mqtt_publisher import MQTTClient
 
 import queue
 import math
@@ -34,6 +34,8 @@ class CarController(Car):
         self.mqttc.subscribe(cns.MQTT_TOPIC)
 
         self.mqttc.loop_start()  # start the loop in a separate thread
+
+        self.mqtt = MQTTClient(cns.MQTT_HOSTNAME, cns.MQTT_TOPIC)
 
     def on_message_received(self, client, userdata, msg):
         self.message_queue.put(msg.payload.decode('utf-8'))
@@ -114,6 +116,8 @@ class CarController(Car):
             # the car has finished the maneuver of rotation
             self.message_queue.get()  # pop the first value of the queue
             self.stop()
+            self.mqtt.publish_message(cns.MANEUVER_COMPLETED)  # inform the CCTV camera that the maneuver is completed
+            self.message_queue.get()  # pop cns.MANEUVER_COMPLETED message from the queue
         else:
             # the car hasn't finished yet the maneuver of rotation
             self.rotate(speed, turn_to_the_right, steering_angle)

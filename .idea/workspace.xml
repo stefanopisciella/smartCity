@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e3da2b0d-f2d4-4ee3-b4f0-3b815b30b910" name="Changes" comment="added setRightSteeringAngle and setLeftSteeringAngle functions in CarController.py">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="e3da2b0d-f2d4-4ee3-b4f0-3b815b30b910" name="Changes" comment="now the car can turn 90 degrees to its right precisely">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ParkingManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/ParkingManager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants.py" afterDir="false" />
@@ -13,7 +12,6 @@
       <change beforePath="$PROJECT_DIR$/virtual/cctvCamera.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/virtual/cctvCamera.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webots/smartCity/controllers/CarController/CarController.py" beforeDir="false" afterPath="$PROJECT_DIR$/webots/smartCity/controllers/CarController/CarController.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webots/smartCity/worlds/.city.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/webots/smartCity/worlds/.city.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webots/smartCity/worlds/.city.wbproj" beforeDir="false" afterPath="$PROJECT_DIR$/webots/smartCity/worlds/.city.wbproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webots/smartCity/worlds/city.wbt" beforeDir="false" afterPath="$PROJECT_DIR$/webots/smartCity/worlds/city.wbt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -90,7 +88,12 @@
       <workItem from="1716845678359" duration="55000" />
       <workItem from="1716903833883" duration="5752000" />
       <workItem from="1717083863894" duration="3789000" />
-      <workItem from="1717091651009" duration="16197000" />
+      <workItem from="1717091651009" duration="17103000" />
+      <workItem from="1717316856255" duration="8210000" />
+      <workItem from="1717329846841" duration="10345000" />
+      <workItem from="1717355662275" duration="2861000" />
+      <workItem from="1717594484363" duration="9353000" />
+      <workItem from="1717608774200" duration="4877000" />
     </task>
     <task id="LOCAL-00001" summary="increased the sleep time in ParkingManager.py to speed up the simulation">
       <option name="closed" value="true" />
@@ -108,7 +111,31 @@
       <option name="project" value="LOCAL" />
       <updated>1716910744181</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="now the car can turn in to its right">
+      <option name="closed" value="true" />
+      <created>1717178322826</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1717178322826</updated>
+    </task>
+    <task id="LOCAL-00004" summary="now the car can turn in to its right">
+      <option name="closed" value="true" />
+      <created>1717594989518</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1717594989518</updated>
+    </task>
+    <task id="LOCAL-00005" summary="now the car can turn 90 degrees to its right precisely">
+      <option name="closed" value="true" />
+      <created>1717596208384</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1717596208384</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -117,10 +144,12 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="increased the sleep time in ParkingManager.py to speed up the simulation" />
     <MESSAGE value="added setRightSteeringAngle and setLeftSteeringAngle functions in CarController.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="added setRightSteeringAngle and setLeftSteeringAngle functions in CarController.py" />
+    <MESSAGE value="now the car can turn in to its right" />
+    <MESSAGE value="now the car can turn 90 degrees to its right precisely" />
+    <option name="LAST_COMMIT_MESSAGE" value="now the car can turn 90 degrees to its right precisely" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/smartCity$CCTVcameraController.coverage" NAME="CCTVcameraController Coverage Results" MODIFIED="1717177575035" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webots/smartCity/controllers/CCTVcameraController" />
+    <SUITE FILE_PATH="coverage/smartCity$CCTVcameraController.coverage" NAME="CCTVcameraController Coverage Results" MODIFIED="1717618202786" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webots/smartCity/controllers/CCTVcameraController" />
     <SUITE FILE_PATH="coverage/smartCity$CCTVcameraCode.coverage" NAME="CCTVcameraCode Coverage Results" MODIFIED="1716845112767" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webots/smartCity/controllers/CCTVcameraController" />
   </component>
 </project>

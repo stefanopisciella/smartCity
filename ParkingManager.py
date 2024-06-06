@@ -4,11 +4,13 @@ import os.path as pt
 import time
 import json
 import numpy as np
+import queue
 
 from ultralytics import YOLO
 
 import constants as cns
 from mqtt_publisher import MQTTClient
+import paho.mqtt.client as mqtt
 
 
 class ParkingManager:
@@ -46,6 +48,15 @@ class ParkingManager:
         self.required_distance_to_brake = 22  # expressed in pixels
 
         self.mqtt = MQTTClient(cns.MQTT_HOSTNAME, cns.MQTT_TOPIC)
+
+        # START mqtt subscriber
+        self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+        self.mqttc.on_message = self.on_message_received
+        self.mqttc.connect(cns.MQTT_HOSTNAME, 1883, 60)  # connect to the broker
+        self.mqttc.subscribe(cns.MQTT_TOPIC)
+        # START mqtt subscriber
+
+        self.message_queue = queue.Queue()
 
         # centerlinePos: centerlinePos['X_coordinate_of_the_left_corner', 'X_coordinate_of_the_right_corner', 'Y_coordinate']
         # parkingStallsPos: ['id', 'x1', 'x2', 'parking_row_id']
@@ -405,6 +416,9 @@ class ParkingManager:
             self.guide_the_car_until_the_target(548)  # 1° phase
         elif self.current_driving_phase == 2:
             self.rotate_the_car()  # 2° phase
+        elif self.current_driving_phase == 3:
+            self.start_the_mqtt_listener_thread()
+            self.wait_the_car_until_it_finish_the_maneuver()  # 3° phase
 
     def guide_the_car_until_the_target(self, target_y_coordinate):
         if self.car_about_to_park["box"]["y1"] <= target_y_coordinate + self.required_distance_to_brake:
@@ -415,6 +429,20 @@ class ParkingManager:
         else:
             # the car that is about to park has not crossed the target yet ==> it has to continue to move to reach it
             self.send_go_straight()
+
+    def wait_the_car_until_it_finish_the_maneuver(self):
+        if not self.message_queue.empty():
+            last_received_message = self.message_queue.get()
+            if last_received_message == cns.MANEUVER_COMPLETED:
+                print("MANEUVER COMPLETED")
+                self.current_driving_phase += 1
+                return  # ==> it goes to the next phase
+
+    def start_the_mqtt_listener_thread(self):
+        self.mqttc.loop_start()  # start the loop in a separate thread
+
+    def on_message_received(self, client, userdata, msg):
+        self.message_queue.put(msg.payload.decode('utf-8'))
 
     def rotate_the_car(self):
         # for the moment I assume that the car can only rotate to its right
