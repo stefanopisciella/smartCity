@@ -33,7 +33,7 @@ class ParkingManager:
         self.parking_row_id = 1
         # END variables used only in click_parking_row_corners() and click_centerline_corners()
 
-        self.cctv_camera_img = cv2.imread(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH)
+        self.cctv_camera_img = cv2.imread(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH) if pt.exists(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH) else None
 
         self.detected_cars = []
         self.detected_objects = None
@@ -413,22 +413,38 @@ class ParkingManager:
             return
 
         if self.current_driving_phase == 1:
-            self.guide_the_car_until_the_target(548)  # 1° phase
+            self.guide_the_car_until_the_target(False, False, 548)  # 1° phase
         elif self.current_driving_phase == 2:
             self.rotate_the_car()  # 2° phase
         elif self.current_driving_phase == 3:
             self.start_the_mqtt_listener_thread()
             self.wait_the_car_until_it_finish_the_maneuver()  # 3° phase
+        elif self.current_driving_phase == 4:
+            self.guide_the_car_until_the_target(True, True, 876)  # CHECK now the Citroen reaches the blue car
 
-    def guide_the_car_until_the_target(self, target_y_coordinate):
-        if self.car_about_to_park["box"]["y1"] <= target_y_coordinate + self.required_distance_to_brake:
-            # the car that is about to park has crossed the target ==> it has to stop, and it has to jump to the next phase
-            self.send_stop()
-            self.current_driving_phase += 1
-            return  # ==> it goes to the next phase
+    def guide_the_car_until_the_target(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinates, target_coordinate):
+        car_coordinate = self.car_about_to_park["box"]["x2"] if car_goes_parallel_to_x_axis else self.car_about_to_park["box"]["y1"]
+
+        if car_goes_to_greater_coordinates:
+            # (car goes_parallel to x-axis and in EST direction) OR (car goes_parallel to y-axis and in NORTH direction)
+            if car_coordinate >= target_coordinate - self.required_distance_to_brake:  # CHECK the minus sign
+                # the car that is about to park has crossed the target ==> it has to stop, and it has to jump to the next phase
+                self.send_stop()
+                self.current_driving_phase += 1
+                return  # ==> it goes to the next phase
+            else:
+                # the car that is about to park has not crossed the target yet ==> it has to continue to move to reach it
+                self.send_go_straight()
         else:
-            # the car that is about to park has not crossed the target yet ==> it has to continue to move to reach it
-            self.send_go_straight()
+            # (car goes_parallel to x-axis and in WEST direction) OR (car goes_parallel to y-axis and in SOUTH direction)
+            if car_coordinate <= target_coordinate + self.required_distance_to_brake:
+                # the car that is about to park has crossed the target ==> it has to stop, and it has to jump to the next phase
+                self.send_stop()
+                self.current_driving_phase += 1
+                return  # ==> it goes to the next phase
+            else:
+                # the car that is about to park has not crossed the target yet ==> it has to continue to move to reach it
+                self.send_go_straight()
 
     def wait_the_car_until_it_finish_the_maneuver(self):
         if not self.message_queue.empty():

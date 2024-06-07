@@ -42,7 +42,12 @@ class CarController(Car):
 
     def act(self):
         # CHECK
-        # self.rotate(5, True)
+        """
+        while self.step() != -1:
+            self.go_straight(-4)
+            # self.rotate(-4, True)
+        """
+
         try:
             parking_entrance_crossed = False
 
@@ -73,7 +78,8 @@ class CarController(Car):
                 self.camera.getImage()
                 self.camera.saveImage(self.cameraImgPath, 100)
                 img = cv2.imread(self.cameraImgPath, cv2.IMREAD_UNCHANGED)
-                cv2.imshow(self.car_brand_name + " camera", img)
+                if img is not None:
+                    cv2.imshow(self.car_brand_name + " camera", img)
                 # END camera
 
                 if cv2.waitKey(1) == 27:
@@ -117,6 +123,7 @@ class CarController(Car):
             self.message_queue.get()  # pop the first value of the queue
             self.stop()
             self.mqtt.publish_message(cns.MANEUVER_COMPLETED)  # inform the CCTV camera that the maneuver is completed
+            print("MANEUVER COMPLETED")
             self.message_queue.get()  # pop cns.MANEUVER_COMPLETED message from the queue
         else:
             # the car hasn't finished yet the maneuver of rotation

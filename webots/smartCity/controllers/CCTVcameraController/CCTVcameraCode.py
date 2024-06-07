@@ -33,16 +33,18 @@ class CCTVcameraController(Robot):
                 break
             """
 
-            lock.acquire()
+            if lock is not None:
+                lock.acquire()
             self.camera.getImage()
             self.camera.saveImage(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH, 100)
-            lock.release()
+            if lock is not None:
+                lock.release()
 
         # CHECK
         self.camera.disable()
 
     @staticmethod
-    def run(lock):
+    def run(lock=None):
         cc = CCTVcameraController()
         cc.act(lock)
 
