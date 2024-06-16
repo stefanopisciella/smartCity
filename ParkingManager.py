@@ -413,14 +413,21 @@ class ParkingManager:
             return
 
         if self.current_driving_phase == 1:
-            self.guide_the_car_until_the_target(False, False, 548)  # 1° phase
+            # 1° phase
+            self.guide_the_car_until_the_target(False, False, 548)
         elif self.current_driving_phase == 2:
-            self.rotate_the_car()  # 2° phase
+            # 2° phase
+            self.rotate_the_car()
         elif self.current_driving_phase == 3:
+            # 3° phase
             self.start_the_mqtt_listener_thread()
-            self.wait_the_car_until_it_finish_the_maneuver()  # 3° phase
+            self.wait_the_car_until_it_finish_the_maneuver()
         elif self.current_driving_phase == 4:
-            self.guide_the_car_until_the_target(True, True, 876)  # CHECK now the Citroen reaches the blue car
+            # 4° phase
+            self.guide_the_car_until_the_target(True, True, 821)  # CHECK now the Citroen reaches the blue car; target_coordinate was 876
+        elif self.current_driving_phase == 5:
+            # 5° phase
+            self.send_start_park()
 
     def guide_the_car_until_the_target(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinates, target_coordinate):
         car_coordinate = self.car_about_to_park["box"]["x2"] if car_goes_parallel_to_x_axis else self.car_about_to_park["box"]["y1"]
@@ -580,6 +587,10 @@ class ParkingManager:
 
     def send_parking_entrance_crossed(self):
         self.mqtt.publish_message(cns.PARKING_ENTRANCE_CROSSED)
+
+    def send_start_park(self):
+        self.mqtt.publish_message(cns.START_PARKING_PHASE_IN_A_RIGHT_SQUARE)  # CHECK for the moment I assume that the car parks only
+        # in the right square
 
     def send_rotate(self, to_the_right):
         if to_the_right:
