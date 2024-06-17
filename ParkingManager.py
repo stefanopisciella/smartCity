@@ -429,8 +429,21 @@ class ParkingManager:
             # 5° phase
             self.send_start_park()
 
+            self.current_driving_phase += 1  # jump to the next phase
+        elif self.current_driving_phase == 6:
+            # 6° phase
+            self.wait_until_it_approaches_the_parking_stall()
+        elif self.current_driving_phase == 7:
+            # 7° phase
+
+            self.send_go_straight(False)  # CHECK for the moment I assume that the free parking stall is behind the car that has to park
+
     def guide_the_car_until_the_target(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinates, target_coordinate):
-        car_coordinate = self.car_about_to_park["box"]["x2"] if car_goes_parallel_to_x_axis else self.car_about_to_park["box"]["y1"]
+        # CHECK controlla se la conversione in intero non dà problemi
+        car_coordinate = int(self.car_about_to_park["box"]["x2"] if car_goes_parallel_to_x_axis else self.car_about_to_park["box"]["y1"])
+
+        # CHECK
+        print(f"car coordinate: {car_coordinate}")
 
         if car_goes_to_greater_coordinates:
             # (car goes_parallel to x-axis and in EST direction) OR (car goes_parallel to y-axis and in NORTH direction)
@@ -441,7 +454,7 @@ class ParkingManager:
                 return  # ==> it goes to the next phase
             else:
                 # the car that is about to park has not crossed the target yet ==> it has to continue to move to reach it
-                self.send_go_straight()
+                self.send_go_straight(True)
         else:
             # (car goes_parallel to x-axis and in WEST direction) OR (car goes_parallel to y-axis and in SOUTH direction)
             if car_coordinate <= target_coordinate + self.required_distance_to_brake:
@@ -451,13 +464,21 @@ class ParkingManager:
                 return  # ==> it goes to the next phase
             else:
                 # the car that is about to park has not crossed the target yet ==> it has to continue to move to reach it
-                self.send_go_straight()
+                self.send_go_straight(True)
 
     def wait_the_car_until_it_finish_the_maneuver(self):
         if not self.message_queue.empty():
             last_received_message = self.message_queue.get()
             if last_received_message == cns.MANEUVER_COMPLETED:
                 print("MANEUVER COMPLETED")
+                self.current_driving_phase += 1
+                return  # ==> it goes to the next phase
+
+    def wait_until_it_approaches_the_parking_stall(self):
+        if not self.message_queue.empty():
+            last_received_message = self.message_queue.get()
+            if last_received_message == cns.APPROACH_TO_THE_PARKING_STALL_COMPLETED:
+                print("APPROACH TO THE PARKING STALL COMPLETED")
                 self.current_driving_phase += 1
                 return  # ==> it goes to the next phase
 
@@ -582,8 +603,11 @@ class ParkingManager:
     def send_stop(self):
         self.mqtt.publish_message(cns.STOP)
 
-    def send_go_straight(self):
-        self.mqtt.publish_message(cns.GO_STRAIGHT)
+    def send_go_straight(self, go_forward):
+        if go_forward:
+            self.mqtt.publish_message(cns.GO_FORWARD_STRAIGHT)
+        elif not go_forward:
+            self.mqtt.publish_message(cns.GO_BACKWARD_STRAIGHT)
 
     def send_parking_entrance_crossed(self):
         self.mqtt.publish_message(cns.PARKING_ENTRANCE_CROSSED)

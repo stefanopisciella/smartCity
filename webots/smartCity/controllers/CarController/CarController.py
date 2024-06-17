@@ -71,8 +71,11 @@ class CarController(Car):
                         self.stop()
 
                         self.message_queue.get()  # pop this message from the queue
-                    elif last_received_message == cns.GO_STRAIGHT:
-                        self.go_straight(5)
+                    elif last_received_message == cns.GO_FORWARD_STRAIGHT or last_received_message == cns.GO_BACKWARD_STRAIGHT:
+                        if last_received_message == cns.GO_FORWARD_STRAIGHT:
+                            self.go_straight(5)
+                        else:
+                            self.go_straight(-5)
 
                         self.message_queue.get()  # pop this message from the queue
                     elif last_received_message == cns.ROTATE_90_DEGREES_TO_RIGHT:
@@ -92,7 +95,14 @@ class CarController(Car):
                         elif self.current_parking_phase == 4:
                             self.rotate_x_rad(2, False, 89, True)
                         elif self.current_parking_phase == 5:
+                            # approach to the parking stall completed
+
+                            self.mqtt.publish_message(cns.APPROACH_TO_THE_PARKING_STALL_COMPLETED)
+
                             self.message_queue.get()  # pop cns.START_PARKING_PHASE_IN_A_LEFT_SQUARE or cns.START_PARKING_PHASE_IN_A_RIGHT_SQUARE message from the queue
+                            self.message_queue.get()  # pop cns.APPROACH_TO_THE_PARKING_STALL_COMPLETED message from the queue
+
+                            self.current_parking_phase += 1  # jump to the next phase
 
                 # START camera
                 self.camera.getImage()
