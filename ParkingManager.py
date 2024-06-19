@@ -128,12 +128,22 @@ class ParkingManager:
                 current_parking_row_left_corner = (self.parkingRows[-1]["x1"], self.parkingRows[-1]["y1"])
                 current_stall_left_corner = (current_parking_row_left_corner[0], current_parking_row_left_corner[1])
 
-                stall_id = self.num_of_parking_stalls_per_parking_row if self.parking_row_count % 2 == 0 else 1  # I assume that if
+                # START generation of stall_id
+                parking_row_in_the_upper_parking_rectangle = 0 if self.parking_row_count <= 4 else 1
+
+                parking_stall_position_within_its_parking_row = self.num_of_parking_stalls_per_parking_row if self.parking_row_count % 2 == 0 else 1  # I assume that if
                 # parking_row_count is an even number, the current parking row is in the left parking square
+
+                parking_rows_in_upper_part_of_parking_rectangles = [3, 4, 7, 8]
+                parking_rows_in_lower_part_of_parking_rectangles = [1, 2, 5, 6]
+
+                upper_or_lower_parking_row = 'U' if self.parking_row_count in parking_rows_in_upper_part_of_parking_rectangles else 'L'
+                parking_row_in_a_left_or_right_parking_square = 'L' if self.parking_row_count % 2 == 0 else 'R'
+                # END generation of stall_id
 
                 while current_stall_left_corner[0] <= x:
                     stall = {
-                        "id": stall_id,
+                        "id": str(parking_row_in_the_upper_parking_rectangle) + str(parking_stall_position_within_its_parking_row) + parking_row_in_a_left_or_right_parking_square + upper_or_lower_parking_row,
                         "x1": current_stall_left_corner[0],
                         "y1": current_stall_left_corner[1],
                         "x2": current_stall_left_corner[0] + self.width,
@@ -145,7 +155,7 @@ class ParkingManager:
                     current_stall_left_corner = (
                         current_stall_left_corner[0] + self.width, current_stall_left_corner[1])
 
-                    stall_id = stall_id - 1 if self.parking_row_count % 2 == 0 else stall_id + 1  # I assume that if parking_row_count
+                    parking_stall_position_within_its_parking_row = parking_stall_position_within_its_parking_row - 1 if self.parking_row_count % 2 == 0 else parking_stall_position_within_its_parking_row + 1  # I assume that if parking_row_count
                     # is an even number, the current parking row is in the left parking square
 
                 self.parking_row_count += 1
