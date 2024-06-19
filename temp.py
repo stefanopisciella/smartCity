@@ -148,6 +148,7 @@ while(cap.isOpened()):
 cap.release()
 cv2.destroyAllWindows()
 """
+"""
 from ultralytics import YOLO
 
 # Load a model
@@ -155,3 +156,19 @@ model = YOLO('YOLOv8x-obb.pt')  # load an official model
 
 # Predict with the model
 results = model('https://ultralytics.com/images/bus.jpg') # predict on an image
+"""
+# I assume that the user picks the parking rows starting from the lowest and rightmost parking square to the highest and leftmost parking square
+parking_row_count = 8
+
+in_the_highest_parking_rectangle = 0 if parking_row_count <= 4 else 1
+
+rows_in_leftmost_parking_squares = [3, 4, 7, 8]
+rows_in_rightmost_parking_squares = [1, 2, 5, 6]
+
+in_the_leftmost_parking_square = 0 if parking_row_count in rows_in_rightmost_parking_squares else 1
+
+in_the_lower_parking_row = 0 if parking_row_count % 2 != 0 else 1
+prefix_of_parking_stall_id = str(in_the_highest_parking_rectangle) + str(in_the_leftmost_parking_square) + str(
+    in_the_lower_parking_row)
+
+print(prefix_of_parking_stall_id)

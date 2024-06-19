@@ -30,7 +30,9 @@ class ParkingManager:
 
         self.parking_entrance_x1_coordinate = None
 
-        self.parking_row_id = 1
+        self.parking_row_count = 1
+
+        self.num_of_parking_stalls_per_parking_row = 6
         # END variables used only in click_parking_row_corners() and click_centerline_corners()
 
         self.cctv_camera_img = cv2.imread(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH) if pt.exists(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH) else None
@@ -111,7 +113,7 @@ class ParkingManager:
 
             if self.parking_row_corner_num == 1:
                 parking_row = {
-                    "id": self.parking_row_id,
+                    "id": self.parking_row_count,
                     "x1": x,
                     "y1": y
                 }
@@ -125,7 +127,10 @@ class ParkingManager:
 
                 current_parking_row_left_corner = (self.parkingRows[-1]["x1"], self.parkingRows[-1]["y1"])
                 current_stall_left_corner = (current_parking_row_left_corner[0], current_parking_row_left_corner[1])
-                stall_id = 1
+
+                stall_id = self.num_of_parking_stalls_per_parking_row if self.parking_row_count % 2 == 0 else 1  # I assume that if
+                # parking_row_count is an even number, the current parking row is in the left parking square
+
                 while current_stall_left_corner[0] <= x:
                     stall = {
                         "id": stall_id,
@@ -133,16 +138,17 @@ class ParkingManager:
                         "y1": current_stall_left_corner[1],
                         "x2": current_stall_left_corner[0] + self.width,
                         "y2": current_stall_left_corner[1] + self.height,
-                        "parking_row_id": self.parking_row_id
+                        "parking_row_id": self.parking_row_count
                     }
                     self.stalls.append(stall)
 
                     current_stall_left_corner = (
                         current_stall_left_corner[0] + self.width, current_stall_left_corner[1])
 
-                    stall_id += 1
+                    stall_id = stall_id - 1 if self.parking_row_count % 2 == 0 else stall_id + 1  # I assume that if parking_row_count
+                    # is an even number, the current parking row is in the left parking square
 
-                self.parking_row_id += 1
+                self.parking_row_count += 1
                 self.parking_row_corner_num = 0  # so that can be added others parking rows
 
         """
@@ -294,9 +300,37 @@ class ParkingManager:
             cv2.rectangle(self.cctv_camera_img, (stall["x1"], stall["y1"]),
                           (stall["x1"] + self.width, stall["y1"] + self.height), (0, 255, 0), 2)  # green rectangle
 
+            """ debugger for verifying the correctness of the parking stall ids
+            # START setting the text properties
+            position = (int(stall["x1"]), int(stall["y1"]))
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 0.5
+            color = (255, 0, 0)  # blue color
+            thickness = 1  # line thickness
+            # END setting the text properties
+
+            cv2.putText(self.cctv_camera_img, str(stall["id"]), position, font, font_scale,
+                        color, thickness,
+                        cv2.LINE_AA)
+            """
+
         for stall in occupied_stalls:
             cv2.rectangle(self.cctv_camera_img, (stall["x1"], stall["y1"]),
                           (stall["x1"] + self.width, stall["y1"] + self.height), (0, 0, 255), 2)  # red rectangle
+
+            """ debugger for verifying the correctness of the parking stall ids
+            # START setting the text properties
+            position = (int(stall["x1"]), int(stall["y1"]))
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 0.5
+            color = (255, 0, 0)  # blue color
+            thickness = 1  # line thickness
+            # END setting the text properties
+
+            cv2.putText(self.cctv_camera_img, str(stall["id"]), position, font, font_scale,
+                        color, thickness,
+                        cv2.LINE_AA)
+            """
 
     def draw_centerlines(self):
         for centerline in self.centerlines:
