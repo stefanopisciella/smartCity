@@ -49,6 +49,10 @@ class ParkingManager:
 
         self.required_distance_to_brake = 22  # expressed in pixels
 
+        self.free_parking_stalls = None
+        self.occupied_parking_stalls = None
+        self.parking_stall_target = None
+
         self.mqtt = MQTTClient(cns.MQTT_HOSTNAME, cns.MQTT_TOPIC)
 
         # START mqtt subscriber
@@ -286,27 +290,23 @@ class ParkingManager:
                     self.car_about_to_park_x1_coordinate = detected_object["box"]["x1"]
                     self.car_about_to_park_y1_coordinate = detected_object["box"]["y1"]
 
-    def get_all_parking_stalls(self):
-        occupied_stalls = []
-        free_stalls = []
+    def collect_all_parking_stalls(self):
+        self.occupied_parking_stalls = []
+        self.free_parking_stalls = []
 
         for stall in self.stalls:
             current_stall_is_occupied = False
 
             for car in self.detected_cars:
                 if self.compute_intersection_between_car_box_and_stall_box(car["box"], stall) > 300:  # 300 pixels
-                    occupied_stalls.append(stall)
+                    self.occupied_parking_stalls.append(stall)
                     current_stall_is_occupied = True
 
             if current_stall_is_occupied is False:
-                free_stalls.append(stall)
-
-        return free_stalls, occupied_stalls
+                self.free_parking_stalls.append(stall)
 
     def draw_all_parking_stalls(self):
-        free_stalls, occupied_stalls = self.get_all_parking_stalls()
-
-        for stall in free_stalls:
+        for stall in self.free_parking_stalls:
             cv2.rectangle(self.cctv_camera_img, (stall["x1"], stall["y1"]),
                           (stall["x1"] + self.width, stall["y1"] + self.height), (0, 255, 0), 2)  # green rectangle
 
@@ -324,7 +324,7 @@ class ParkingManager:
                         cv2.LINE_AA)
             """
 
-        for stall in occupied_stalls:
+        for stall in self.occupied_parking_stalls:
             cv2.rectangle(self.cctv_camera_img, (stall["x1"], stall["y1"]),
                           (stall["x1"] + self.width, stall["y1"] + self.height), (0, 0, 255), 2)  # red rectangle
 
@@ -426,14 +426,18 @@ class ParkingManager:
                     lock.release()
 
                     self.detect_cars()
-
                     self.detect_the_car_that_is_about_to_park()
                     self.mark_the_car_that_is_about_to_park()
+
+                    self.collect_all_parking_stalls()
+
                     self.guide_the_car_that_is_about_to_park()
 
                     self.draw_car_boxes()
                     self.draw_all_parking_stalls()
                     self.draw_centerlines()
+
+                    self.find_parking_stall_target()
 
                     cv2.imshow("CCTV camera", self.cctv_camera_img)
 
@@ -665,6 +669,23 @@ class ParkingManager:
             self.mqtt.publish_message(cns.ROTATE_90_DEGREES_TO_RIGHT)
         else:
             self.mqtt.publish_message(cns.ROTATE_90_DEGREES_TO_LEFT)
+
+    # it finds the closest parking stall to the car that is about to park
+    def find_parking_stall_target(self):
+        def sort_parking_stalls_by_their_distance_to_the_car_that_is_about_to_park(arr):
+            return arr['id'][0] + arr['id'][1], -ord(arr['id'][2]), ord(arr['id'][3])  # in this way, we have an ordered list that prioritizes the parking
+            # stalls located in the lower parking rectangle and then parking stalls with lower parking_stall_position_within_its_parking_row.
+            # If more than one parking stall is located in the same parking rectangle, and they all have the same parking_stall_position_within_its_parking_row,
+            # the priority is given to the parking stall located in the lower part of the rectangle and those that are located in the right
+            # parking square
+            # arr['id'][0] gets the number of parking rectangle
+            # arr['id'][1] gets parking_stall_position_within_its_parking_row
+            # -ord(arr['id'][2]) gets the character 'L' or 'R'
+            # ord(arr['id'][3]) gets the character 'L' or 'U'
+
+        self.free_parking_stalls.sort(key=sort_parking_stalls_by_their_distance_to_the_car_that_is_about_to_park)
+
+        self.parking_stall_target = self.free_parking_stalls[0]
 
     @staticmethod
     def run(lock):

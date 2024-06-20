@@ -157,6 +157,7 @@ model = YOLO('YOLOv8x-obb.pt')  # load an official model
 # Predict with the model
 results = model('https://ultralytics.com/images/bus.jpg') # predict on an image
 """
+"""
 # I assume that the user picks the parking rows starting from the lowest and rightmost parking square to the highest and leftmost parking square
 parking_row_count = 8
 
@@ -172,3 +173,11 @@ prefix_of_parking_stall_id = str(in_the_highest_parking_rectangle) + str(in_the_
     in_the_lower_parking_row)
 
 print(prefix_of_parking_stall_id)
+"""
+arr = ["ciao", "miao"]
+
+arr = []
+
+print(arr)
+
+
