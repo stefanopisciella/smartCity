@@ -307,8 +307,26 @@ class ParkingManager:
 
     def draw_all_parking_stalls(self):
         for stall in self.free_parking_stalls:
+            if self.parking_stall_target is not None and stall["id"] == self.parking_stall_target["id"]:
+                stall_border_color = (255, 0, 255)  # violet
+                stall_border_thickness = 3
+
+                # START marking the parking stall target
+                cv2.putText(self.cctv_camera_img,
+                            "T",
+                            (int(self.parking_stall_target["x2"]), int(self.parking_stall_target["y1"])),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            1,
+                            (255, 0, 255),  # violet
+                            3,
+                            cv2.LINE_AA)  # writing the "T" mark
+                # END marking the parking stall target
+            else:
+                stall_border_color = (0, 255, 0)  # green
+                stall_border_thickness = 2
+
             cv2.rectangle(self.cctv_camera_img, (stall["x1"], stall["y1"]),
-                          (stall["x1"] + self.width, stall["y1"] + self.height), (0, 255, 0), 2)  # green rectangle
+                          (stall["x1"] + self.width, stall["y1"] + self.height), stall_border_color, stall_border_thickness)  # green rectangle
 
             """ debugger for verifying the correctness of the parking stall ids
             # START setting the text properties
