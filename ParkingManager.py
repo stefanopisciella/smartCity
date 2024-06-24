@@ -298,7 +298,7 @@ class ParkingManager:
             current_stall_is_occupied = False
 
             for car in self.detected_cars:
-                if self.compute_intersection_between_car_box_and_stall_box(car["box"], stall) > 300:  # 300 pixels
+                if self.compute_intersection_between_car_box_and_stall_box(car["box"], stall) > 400:  # 400 pixels
                     self.occupied_parking_stalls.append(stall)
                     current_stall_is_occupied = True
 
