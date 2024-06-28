@@ -4,11 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e3da2b0d-f2d4-4ee3-b4f0-3b815b30b910" name="Changes" comment="generation of stall_id tested">
+    <list default="true" id="e3da2b0d-f2d4-4ee3-b4f0-3b815b30b910" name="Changes" comment="changed number of pixels in compute_intersection_between_car_box_and_stall_box function">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ParkingManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/ParkingManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/virtual/carCamera.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/virtual/carCamera.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webots/smartCity/controllers/CarController/CarController.py" beforeDir="false" afterPath="$PROJECT_DIR$/webots/smartCity/controllers/CarController/CarController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webots/smartCity/worlds/.city.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/webots/smartCity/worlds/.city.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webots/smartCity/worlds/.city.wbproj" beforeDir="false" afterPath="$PROJECT_DIR$/webots/smartCity/worlds/.city.wbproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webots/smartCity/worlds/city.wbt" beforeDir="false" afterPath="$PROJECT_DIR$/webots/smartCity/worlds/city.wbt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +45,7 @@
   &quot;keyToString&quot;: {
     &quot;Python.CCTVcameraCode.executor&quot;: &quot;Run&quot;,
     &quot;Python.CCTVcameraController.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ParkingManager.executor&quot;: &quot;Run&quot;,
     &quot;Python.inference_on_a_single_frame.executor&quot;: &quot;Run&quot;,
     &quot;Python.inference_on_a_video.executor&quot;: &quot;Run&quot;,
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
@@ -119,7 +124,9 @@
       <workItem from="1718809316469" duration="14000" />
       <workItem from="1718810177411" duration="16406000" />
       <workItem from="1718903030388" duration="4318000" />
-      <workItem from="1719076315836" duration="2483000" />
+      <workItem from="1719076315836" duration="22408000" />
+      <workItem from="1719239677285" duration="51027000" />
+      <workItem from="1719588686244" duration="7356000" />
     </task>
     <task id="LOCAL-00001" summary="increased the sleep time in ParkingManager.py to speed up the simulation">
       <option name="closed" value="true" />
@@ -217,7 +224,23 @@
       <option name="project" value="LOCAL" />
       <updated>1718906132641</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="now the parking stall target is marked">
+      <option name="closed" value="true" />
+      <created>1719141277973</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1719141277973</updated>
+    </task>
+    <task id="LOCAL-00014" summary="changed number of pixels in compute_intersection_between_car_box_and_stall_box function">
+      <option name="closed" value="true" />
+      <created>1719245106305</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1719245106305</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -245,14 +268,17 @@
     <MESSAGE value="added debugger for verifying the correctness of the stall ids" />
     <MESSAGE value="added the generation of the stall_ids (they are correct)" />
     <MESSAGE value="generation of stall_id tested" />
-    <option name="LAST_COMMIT_MESSAGE" value="generation of stall_id tested" />
+    <MESSAGE value="now the parking stall target is marked" />
+    <MESSAGE value="changed number of pixels in compute_intersection_between_car_box_and_stall_box function" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed number of pixels in compute_intersection_between_car_box_and_stall_box function" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/smartCity$CCTVcameraController.coverage" NAME="CCTVcameraController Coverage Results" MODIFIED="1719079328404" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webots/smartCity/controllers/CCTVcameraController" />
+    <SUITE FILE_PATH="coverage/smartCity$CCTVcameraController.coverage" NAME="CCTVcameraController Coverage Results" MODIFIED="1719609139859" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webots/smartCity/controllers/CCTVcameraController" />
     <SUITE FILE_PATH="coverage/smartCity$main.coverage" NAME="main Coverage Results" MODIFIED="1718818413476" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/smartCity$temp.coverage" NAME="temp Coverage Results" MODIFIED="1718905656226" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/smartCity$temp.coverage" NAME="temp Coverage Results" MODIFIED="1719586849821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/smartCity$inference_on_a_video.coverage" NAME="inference_on_a_video Coverage Results" MODIFIED="1718636160593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/smartCity$CCTVcameraCode.coverage" NAME="CCTVcameraCode Coverage Results" MODIFIED="1717772245741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webots/smartCity/controllers/CCTVcameraController" />
+    <SUITE FILE_PATH="coverage/smartCity$ParkingManager.coverage" NAME="ParkingManager Coverage Results" MODIFIED="1719433580264" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/smartCity$inference_on_a_single_frame.coverage" NAME="inference_on_a_single_frame Coverage Results" MODIFIED="1718634897354" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

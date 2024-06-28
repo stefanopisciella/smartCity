@@ -35,7 +35,8 @@ class ParkingManager:
         self.num_of_parking_stalls_per_parking_row = 6
         # END variables used only in click_parking_row_corners() and click_centerline_corners()
 
-        self.cctv_camera_img = cv2.imread(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH) if pt.exists(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH) else None
+        self.cctv_camera_img = cv2.imread(cns.VIRTUAL_CCTV_CAMERA_IMG_PATH) if pt.exists(
+            cns.VIRTUAL_CCTV_CAMERA_IMG_PATH) else None
 
         self.detected_cars = []
         self.detected_objects = None
@@ -52,6 +53,9 @@ class ParkingManager:
         self.free_parking_stalls = None
         self.occupied_parking_stalls = None
         self.parking_stall_target = None
+
+        self.guide_the_car_until_the_target_params = None
+        self.it_goes_to_a_right_square = None
 
         self.mqtt = MQTTClient(cns.MQTT_HOSTNAME, cns.MQTT_TOPIC)
 
@@ -147,7 +151,8 @@ class ParkingManager:
 
                 while current_stall_left_corner[0] <= x:
                     stall = {
-                        "id": str(parking_row_in_the_upper_parking_rectangle) + str(parking_stall_position_within_its_parking_row) + parking_row_in_a_left_or_right_parking_square + upper_or_lower_parking_row,
+                        "id": str(parking_row_in_the_upper_parking_rectangle) + str(
+                            parking_stall_position_within_its_parking_row) + parking_row_in_a_left_or_right_parking_square + upper_or_lower_parking_row,
                         "x1": current_stall_left_corner[0],
                         "y1": current_stall_left_corner[1],
                         "x2": current_stall_left_corner[0] + self.width,
@@ -168,7 +173,7 @@ class ParkingManager:
         """
         if events == cv2.EVENT_RBUTTONDOWN:
             # user has right-clicked ==> remove the clicked position from the list
-    
+
             for i, pos in enumerate(posList):  # looping the saved parking stalls
                 x1, y1 = pos
                 if x1 < x < x1 + width and y1 < y < y1 + height:
@@ -218,7 +223,7 @@ class ParkingManager:
         """
         if events == cv2.EVENT_RBUTTONDOWN:
             # user has right-clicked ==> remove the clicked position from the list
-    
+
             for i, pos in enumerate(centerlines):  # looping the saved parking stalls
                 x1, y1 = pos
                 if x1 < x < x1 + width and y1 < y < y1 + height:
@@ -254,7 +259,8 @@ class ParkingManager:
 
             # START drawing all entrance lines
             if self.parking_entrance is not None:
-                cv2.line(self.cctv_camera_img, (self.parking_entrance[0], self.parking_entrance[2]), (self.parking_entrance[1], self.parking_entrance[2]), (0, 255, 0), 2)
+                cv2.line(self.cctv_camera_img, (self.parking_entrance[0], self.parking_entrance[2]),
+                         (self.parking_entrance[1], self.parking_entrance[2]), (0, 255, 0), 2)
             # END drawing all entrance lines
 
             if element == "stalls":
@@ -284,9 +290,8 @@ class ParkingManager:
                 # the current detected_object is a car
                 self.detected_cars.append(detected_object)
 
-                if self.check_if_the_car_about_to_park_has_been_already_detected()\
+                if self.check_if_the_car_about_to_park_has_been_already_detected() \
                         and detected_object["track_id"] == self.car_about_to_park_track_id:
-
                     self.car_about_to_park_x1_coordinate = detected_object["box"]["x1"]
                     self.car_about_to_park_y1_coordinate = detected_object["box"]["y1"]
 
@@ -306,6 +311,9 @@ class ParkingManager:
                 self.free_parking_stalls.append(stall)
 
     def draw_all_parking_stalls(self):
+        # CHECK
+        print(self.free_parking_stalls)
+
         for stall in self.free_parking_stalls:
             if self.parking_stall_target is not None and stall["id"] == self.parking_stall_target["id"]:
                 stall_border_color = (255, 0, 255)  # violet
@@ -326,7 +334,8 @@ class ParkingManager:
                 stall_border_thickness = 2
 
             cv2.rectangle(self.cctv_camera_img, (stall["x1"], stall["y1"]),
-                          (stall["x1"] + self.width, stall["y1"] + self.height), stall_border_color, stall_border_thickness)  # green rectangle
+                          (stall["x1"] + self.width, stall["y1"] + self.height), stall_border_color,
+                          stall_border_thickness)  # green rectangle
 
             """ debugger for verifying the correctness of the parking stall ids
             # START setting the text properties
@@ -362,7 +371,8 @@ class ParkingManager:
 
     def draw_centerlines(self):
         for centerline in self.centerlines:
-            cv2.line(self.cctv_camera_img, (centerline[0], centerline[2]), (centerline[1], centerline[2]), (0, 255, 255), 1)  # yellow line
+            cv2.line(self.cctv_camera_img, (centerline[0], centerline[2]), (centerline[1], centerline[2]),
+                     (0, 255, 255), 1)  # yellow line
 
     def compute_intersection_between_car_box_and_stall_box(self, car_box, stall_box):
         # intersection_x1 and intersection_y1 are the coordinates for the top-left corner of the intersection
@@ -408,7 +418,8 @@ class ParkingManager:
             # END creating a rectangle for the background of the text
             """
 
-            cv2.putText(self.cctv_camera_img, "#" + str(track_id) + " Car " + confidence, position, font, font_scale, color, thickness,
+            cv2.putText(self.cctv_camera_img, "#" + str(track_id) + " Car " + confidence, position, font, font_scale,
+                        color, thickness,
                         cv2.LINE_AA)  # writing the
             # class of the detected object
 
@@ -435,7 +446,7 @@ class ParkingManager:
 
                     self.detected_objects = json.loads(results[0].tojson())
 
-                    # CHECK
+                    # DEBUG
                     # print(results[0].tojson())
 
                     self.read_frame()  # without this call all the drawing methods couldn't draw on the frame
@@ -449,13 +460,12 @@ class ParkingManager:
 
                     self.collect_all_parking_stalls()
 
+                    self.find_parking_stall_target()
                     self.guide_the_car_that_is_about_to_park()
 
                     self.draw_car_boxes()
                     self.draw_all_parking_stalls()
                     self.draw_centerlines()
-
-                    self.find_parking_stall_target()
 
                     cv2.imshow("CCTV camera", self.cctv_camera_img)
 
@@ -475,45 +485,81 @@ class ParkingManager:
             time.sleep(1)  # !!! SLEEP
 
     def guide_the_car_that_is_about_to_park(self):
-        if not self.find_the_car_that_is_about_to_park():
+        if not self.find_the_car_that_is_about_to_park() or self.parking_stall_target["id"] is None:
             return
 
         if self.current_driving_phase == 1:
-            # 1° phase
-            self.guide_the_car_until_the_target(False, False, 548)
-        elif self.current_driving_phase == 2:
+            parking_stall_target_id = self.parking_stall_target["id"]
+
+            target_coordinate_phase2_arr = {"lower_right_parking_square": 548,
+                                            "lower_left_parking_square": 514,
+                                            "higher_right_parking_square": None,
+                                            "higher_left_parking_square": None}
+            # CHECK
+            print(f'parking_stall_target_id: {self.parking_stall_target["id"]}')
+
+            if parking_stall_target_id[0] == '0' and parking_stall_target_id[-2] == 'R':
+                target_coordinate_phase2 = target_coordinate_phase2_arr["lower_right_parking_square"]
+                self.it_goes_to_a_right_square = True
+            elif parking_stall_target_id[0] == '0' and parking_stall_target_id[-2] == 'L':
+                target_coordinate_phase2 = target_coordinate_phase2_arr["lower_left_parking_square"]
+                self.it_goes_to_a_right_square = False
+            elif parking_stall_target_id[0] == '1' and parking_stall_target_id[-2] == 'R':
+                target_coordinate_phase2 = target_coordinate_phase2_arr["higher_right_parking_square"]
+                self.it_goes_to_a_right_square = True
+            elif parking_stall_target_id[0] == '1' and parking_stall_target_id[-2] == 'L':
+                target_coordinate_phase2 = target_coordinate_phase2_arr["higher_left_parking_square"]
+                self.it_goes_to_a_right_square = False
+
+            # CHECK
+            print(f"target: {target_coordinate_phase2}")
+
+            self.guide_the_car_until_the_target_params = {"phase2": [False, False, target_coordinate_phase2],
+                                                          "phase3": []}
+
+            self.current_driving_phase += 1
+
+        if self.current_driving_phase == 2:
             # 2° phase
-            self.rotate_the_car()
+            self.guide_the_car_until_the_target(self.guide_the_car_until_the_target_params["phase2"][0], self.guide_the_car_until_the_target_params["phase2"][1], self.guide_the_car_until_the_target_params["phase2"][2], True)  # 514 pixels for the lowest left square; 548 for the lower right square
         elif self.current_driving_phase == 3:
             # 3° phase
-            self.start_the_mqtt_listener_thread()
-            self.wait_the_car_until_it_finish_the_maneuver()
+            self.rotate_the_car(self.it_goes_to_a_right_square)
         elif self.current_driving_phase == 4:
             # 4° phase
-            self.guide_the_car_until_the_target(True, True, 821)  # CHECK now the Citroen reaches the blue car; target_coordinate was 876
+            self.start_the_mqtt_listener_thread()
+            self.wait_the_car_until_it_finish_the_maneuver()
         elif self.current_driving_phase == 5:
             # 5° phase
-            self.send_start_park()
-
-            self.current_driving_phase += 1  # jump to the next phase
+            self.guide_the_car_until_the_target(True, self.it_goes_to_a_right_square,
+                                                self.parking_stall_target["x2"] if self.it_goes_to_a_right_square else self.parking_stall_target["x1"], True)  # CHECK now the Citroen reaches the blue car; target_coordinate was 876, 821 and 429
         elif self.current_driving_phase == 6:
             # 6° phase
-            self.wait_until_it_approaches_the_parking_stall()
+            self.send_start_park(True)
+
+            self.current_driving_phase += 1  # jump to the next phase
         elif self.current_driving_phase == 7:
             # 7° phase
+            self.wait_until_it_approaches_the_parking_stall()
+        elif self.current_driving_phase == 8:
+            # 8° phase
 
-            self.send_go_straight(False)  # CHECK for the moment I assume that the free parking stall is behind the car that has to park
+            self.send_go_straight(
+                False)  # CHECK for the moment I assume that the free parking stall is behind the car that has to park
 
-    def guide_the_car_until_the_target(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinates, target_coordinate):
+    def guide_the_car_until_the_target1(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinates,
+                                       target_coordinate, with_required_distance_to_brake):
         # CHECK controlla se la conversione in intero non dà problemi
-        car_coordinate = int(self.car_about_to_park["box"]["x2"] if car_goes_parallel_to_x_axis else self.car_about_to_park["box"]["y1"])
+        car_coordinate = int(
+            self.car_about_to_park["box"]["x2"] if car_goes_parallel_to_x_axis else self.car_about_to_park["box"]["y1"])
+        required_distance_to_brake = self.required_distance_to_brake if with_required_distance_to_brake is True else 0
 
         # CHECK
         print(f"car coordinate: {car_coordinate}")
 
         if car_goes_to_greater_coordinates:
             # (car goes_parallel to x-axis and in EST direction) OR (car goes_parallel to y-axis and in NORTH direction)
-            if car_coordinate >= target_coordinate - self.required_distance_to_brake:  # CHECK the minus sign
+            if car_coordinate >= target_coordinate - required_distance_to_brake:  # CHECK the minus sign
                 # the car that is about to park has crossed the target ==> it has to stop, and it has to jump to the next phase
                 self.send_stop()
                 self.current_driving_phase += 1
@@ -523,13 +569,41 @@ class ParkingManager:
                 self.send_go_straight(True)
         else:
             # (car goes_parallel to x-axis and in WEST direction) OR (car goes_parallel to y-axis and in SOUTH direction)
-            if car_coordinate <= target_coordinate + self.required_distance_to_brake:
+            if car_coordinate <= target_coordinate + required_distance_to_brake:
                 # the car that is about to park has crossed the target ==> it has to stop, and it has to jump to the next phase
+
+                # CHECK
+                print(
+                    f"car coordinate: {car_coordinate} <= target_coordinate: {target_coordinate + required_distance_to_brake}")
+
                 self.send_stop()
                 self.current_driving_phase += 1
                 return  # ==> it goes to the next phase
             else:
                 # the car that is about to park has not crossed the target yet ==> it has to continue to move to reach it
+                self.send_go_straight(True)
+
+    def guide_the_car_until_the_target(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinates,
+                                       target_coordinate, with_required_distance_to_brake):
+        axis = 'x2' if car_goes_parallel_to_x_axis else 'y1'
+        car_coordinate = int(self.car_about_to_park["box"][axis])
+        required_distance_to_brake = self.required_distance_to_brake if with_required_distance_to_brake else 0
+
+        print(f"Car coordinate: {car_coordinate}")
+
+        if car_goes_to_greater_coordinates:
+            if car_coordinate >= target_coordinate - required_distance_to_brake:
+                self.send_stop()
+                self.current_driving_phase += 1
+            else:
+                self.send_go_straight(True)
+        else:
+            if car_coordinate <= target_coordinate + required_distance_to_brake:
+                print(
+                    f"Car coordinate: {car_coordinate} <= target coordinate: {target_coordinate + required_distance_to_brake}")
+                self.send_stop()
+                self.current_driving_phase += 1
+            else:
                 self.send_go_straight(True)
 
     def wait_the_car_until_it_finish_the_maneuver(self):
@@ -554,9 +628,8 @@ class ParkingManager:
     def on_message_received(self, client, userdata, msg):
         self.message_queue.put(msg.payload.decode('utf-8'))
 
-    def rotate_the_car(self):
-        # for the moment I assume that the car can only rotate to its right
-        self.send_rotate(True)
+    def rotate_the_car(self, to_the_right):
+        self.send_rotate(to_the_right)
 
         self.current_driving_phase += 1
         return  # ==> it goes to the next phase
@@ -588,8 +661,8 @@ class ParkingManager:
                 break
 
     def mark_the_car_that_is_about_to_park(self):
-        if self.check_if_the_car_about_to_park_has_been_already_detected()\
-                and self.car_about_to_park_x1_coordinate is not None\
+        if self.check_if_the_car_about_to_park_has_been_already_detected() \
+                and self.car_about_to_park_x1_coordinate is not None \
                 and self.car_about_to_park_y1_coordinate is not None:
             cv2.putText(self.cctv_camera_img,
                         "P",
@@ -608,14 +681,11 @@ class ParkingManager:
             # CHECK
             # print("if cond" + str(detected_car["box"]["y1"]) + " : " + str(self.get_parking_entrance_y_coordinate()))
 
-            if int(detected_car["box"]["y1"]) >= self.get_parking_entrance_y_coordinate()\
-                    and self.parking_entrance[0] <= int(detected_car["box"]["x1"]) <= self.parking_entrance[1]\
+            if int(detected_car["box"]["y1"]) >= self.get_parking_entrance_y_coordinate() \
+                    and self.parking_entrance[0] <= int(detected_car["box"]["x1"]) <= self.parking_entrance[1] \
                     and self.parking_entrance[0] <= int(detected_car["box"]["x2"]) <= self.parking_entrance[1]:
                 # the current detected car is behind the parking entrance line, and it is aligned to the parking entrance line ==> the current
                 # detected car is about to park
-
-                print(f'track_id: {detected_car["track_id"]}')
-                print(f"parking_entrance: {self.parking_entrance}")
 
                 self.car_about_to_park_track_id = detected_car["track_id"]  # I assume that only one car at a time can
                 # be about to park
@@ -678,8 +748,9 @@ class ParkingManager:
     def send_parking_entrance_crossed(self):
         self.mqtt.publish_message(cns.PARKING_ENTRANCE_CROSSED)
 
-    def send_start_park(self):
-        self.mqtt.publish_message(cns.START_PARKING_PHASE_IN_A_RIGHT_SQUARE)  # CHECK for the moment I assume that the car parks only
+    def send_start_park(self, parking_in_a_right_square):
+        self.mqtt.publish_message(
+            cns.START_PARKING_PHASE_IN_A_RIGHT_SQUARE if parking_in_a_right_square else cns.START_PARKING_PHASE_IN_A_LEFT_SQUARE)  # CHECK for the moment I assume that the car parks only
         # in the right square
 
     def send_rotate(self, to_the_right):
@@ -691,7 +762,8 @@ class ParkingManager:
     # it finds the closest parking stall to the car that is about to park
     def find_parking_stall_target(self):
         def sort_parking_stalls_by_their_distance_to_the_car_that_is_about_to_park(arr):
-            return arr['id'][0] + arr['id'][1], -ord(arr['id'][2]), ord(arr['id'][3])  # in this way, we have an ordered list that prioritizes the parking
+            return arr['id'][0] + arr['id'][1], -ord(arr['id'][2]), ord(
+                arr['id'][3])  # in this way, we have an ordered list that prioritizes the parking
             # stalls located in the lower parking rectangle and then parking stalls with lower parking_stall_position_within_its_parking_row.
             # If more than one parking stall is located in the same parking rectangle, and they all have the same parking_stall_position_within_its_parking_row,
             # the priority is given to the parking stall located in the lower part of the rectangle and those that are located in the right

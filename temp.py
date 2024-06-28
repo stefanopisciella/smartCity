@@ -174,10 +174,8 @@ prefix_of_parking_stall_id = str(in_the_highest_parking_rectangle) + str(in_the_
 
 print(prefix_of_parking_stall_id)
 """
-arr = ["ciao", "miao"]
+stri = "0"
 
-arr = []
-
-print(arr)
-
+if stri[0] == 0:
+    print("MIAO")
 

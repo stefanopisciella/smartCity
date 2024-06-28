@@ -46,16 +46,21 @@ class CarController(Car):
         # CHECK
         """
         while self.step() != -1:
-            # self.go_straight(-4)
-            self.rotate(4, False)
-            # print(self.get_car_orientation_in_degrees())
-            print(self.get_car_orientation())
+            self.rotate(-5, True)
+            # self.rotate_x_rad(-5, True, 239, False)  # it rotates the car 90 degrees to the left
+            # self.go_straight(5)
+
+            # CHECK
+            print(self.get_car_orientation_in_degrees())
         """
 
         try:
             parking_entrance_crossed = False
 
             while self.step() != -1:
+                # CHECK
+                print("orient: ", self.get_car_orientation_in_degrees())
+
                 if self.message_queue.empty():
                     if not parking_entrance_crossed:
                         self.go_straight(2)
@@ -73,28 +78,39 @@ class CarController(Car):
                         self.message_queue.get()  # pop this message from the queue
                     elif last_received_message == cns.GO_FORWARD_STRAIGHT or last_received_message == cns.GO_BACKWARD_STRAIGHT:
                         if last_received_message == cns.GO_FORWARD_STRAIGHT:
+                            # CHECK
                             self.go_straight(5)
                         else:
                             self.go_straight(-5)
 
                         self.message_queue.get()  # pop this message from the queue
                     elif last_received_message == cns.ROTATE_90_DEGREES_TO_RIGHT:
-                        self.rotate_x_rad(10, True, 0, False)  # it rotates the car 90 degrees
+                        self.rotate_x_rad(5, True, 0, False)  # it rotates the car 90 degrees to the right
+                    elif last_received_message == cns.ROTATE_90_DEGREES_TO_LEFT:
+                        self.rotate_x_rad(5, False, 177, False)  # it rotates the car 90 degrees to the left
                     elif last_received_message == cns.START_PARKING_PHASE_IN_A_LEFT_SQUARE or last_received_message == cns.START_PARKING_PHASE_IN_A_RIGHT_SQUARE:
-                        # CHECK
-                        # car_is_in_the_right_square = True if last_received_message == cns.START_PARKING_PHASE_IN_A_RIGHT_SQUARE else False
+                        if last_received_message == cns.START_PARKING_PHASE_IN_A_RIGHT_SQUARE:
+                            if self.current_parking_phase == 0:
+                                self.rotate_x_rad(2, False, 31, True)
+                            elif self.current_parking_phase == 1:
+                                self.rotate_x_rad(-2, True, 61, True)
+                            elif self.current_parking_phase == 2:
+                                self.rotate_x_rad(2, False, 71, True)
+                            elif self.current_parking_phase == 3:
+                                self.rotate_x_rad(-2, True, 85, True)
+                            elif self.current_parking_phase == 4:
+                                self.rotate_x_rad(2, False, 89, True)
+                        else:
+                            if self.current_parking_phase == 0:
+                                self.rotate_x_rad(2, False, 210, True)
+                            elif self.current_parking_phase == 1:
+                                self.rotate_x_rad(-2, True, 239, True)
+                            elif self.current_parking_phase == 2:
+                                self.rotate_x_rad(2, False, 250, True)
+                            elif self.current_parking_phase == 3:
+                                self.rotate_x_rad(-2, True, 269, True)
 
-                        if self.current_parking_phase == 0:
-                            self.rotate_x_rad(2, False, 31, True)
-                        elif self.current_parking_phase == 1:
-                            self.rotate_x_rad(-2, True, 61, True)
-                        elif self.current_parking_phase == 2:
-                            self.rotate_x_rad(2, False, 71, True)
-                        elif self.current_parking_phase == 3:
-                            self.rotate_x_rad(-2, True, 85, True)
-                        elif self.current_parking_phase == 4:
-                            self.rotate_x_rad(2, False, 89, True)
-                        elif self.current_parking_phase == 5:
+                        if self.current_parking_phase == 5:
                             # approach to the parking stall completed
 
                             self.mqtt.publish_message(cns.APPROACH_TO_THE_PARKING_STALL_COMPLETED)
@@ -150,42 +166,28 @@ class CarController(Car):
     def rotate_x_rad(self, speed, turn_to_the_right, target_angle, car_is_in_parking_phase, steering_angle=None):
         car_orientation_in_degrees = self.get_car_orientation_in_degrees()
 
-        if car_orientation_in_degrees < target_angle:
-            if car_orientation_in_degrees >= target_angle + self.required_angle_to_brake:
-                # the car has finished the maneuver of rotation
+        # CHECK
+        print(f"car_orientation: {car_orientation_in_degrees}")
 
-                if car_is_in_parking_phase:
-                    self.current_parking_phase += 1  # jump to the next rotation
-                else:
-                    self.message_queue.get()  # pop cns.ROTATE_90_DEGREES_TO_RIGHT or cns.ROTATE_90_DEGREES_TO_LEFT message from the queue
+        # CHECK
+        if car_orientation_in_degrees == target_angle:
+            # the car has finished the maneuver of rotation
 
-                    self.mqtt.publish_message(cns.MANEUVER_COMPLETED)  # inform the CCTV camera that the maneuver is completed
-                    print("MANEUVER COMPLETED")
-                    self.message_queue.get()  # pop cns.MANEUVER_COMPLETED message from the queue
-
-                self.stop()
+            if car_is_in_parking_phase:
+                self.current_parking_phase += 1  # jump to the next rotation
             else:
-                # the car hasn't finished yet the maneuver of rotation
+                self.message_queue.get()  # pop cns.ROTATE_90_DEGREES_TO_RIGHT or cns.ROTATE_90_DEGREES_TO_LEFT message from the queue
 
-                self.rotate(speed, turn_to_the_right, steering_angle)
+                self.mqtt.publish_message(
+                    cns.MANEUVER_COMPLETED)  # inform the CCTV camera that the maneuver is completed
+                print("MANEUVER COMPLETED")
+                self.message_queue.get()  # pop cns.MANEUVER_COMPLETED message from the queue
+
+            self.stop()
         else:
-            if car_orientation_in_degrees <= target_angle + self.required_angle_to_brake:
-                # the car has finished the maneuver of rotation
+            # the car hasn't finished yet the maneuver of rotation
 
-                if car_is_in_parking_phase:
-                    self.current_parking_phase += 1  # jump to the next rotation
-                else:
-                    self.message_queue.get()  # pop cns.ROTATE_90_DEGREES_TO_RIGHT or cns.ROTATE_90_DEGREES_TO_LEFT message from the queue
-
-                    self.mqtt.publish_message(cns.MANEUVER_COMPLETED)  # inform the CCTV camera that the maneuver is completed
-                    print("MANEUVER COMPLETED")
-                    self.message_queue.get()  # pop cns.MANEUVER_COMPLETED message from the queue
-
-                self.stop()
-            else:
-                # the car hasn't finished yet the maneuver of rotation
-
-                self.rotate(speed, turn_to_the_right, steering_angle)
+            self.rotate(speed, turn_to_the_right, steering_angle)
 
     """
     def rotate_90_degrees(self, speed, turn_to_the_right, steering_angle=None):
@@ -209,7 +211,15 @@ class CarController(Car):
 
     def get_car_orientation_in_degrees(self):
         orientation = self.get_car_orientation()
-        return int(math.degrees(orientation))
+        orientation_in_deg = int(math.degrees(orientation))
+
+        if orientation_in_deg == -179:
+            orientation_in_deg = 180
+
+        if orientation_in_deg < 0:
+            orientation_in_deg = 360 + orientation_in_deg
+
+        return orientation_in_deg
 
     def get_car_orientation(self):
         compass_values = self.compass.getValues()
