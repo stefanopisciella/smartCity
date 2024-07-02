@@ -1,4 +1,5 @@
 from vehicle.car import Car
+from controller.supervisor import Supervisor
 
 import cv2
 
@@ -15,11 +16,17 @@ import constants as cns
 class CarController(Car):
     def __init__(self, car_brand_name, max_steering_angle):
         super().__init__()
+
+        # CHECK
+        # self.supervisor = Supervisor()
+
+        self.car_node = self.getFromDef("car")  # Replace CAR_DEF_NAME with the actual DEF name of your car
         self.car_brand_name = car_brand_name
 
         self.max_steering_angle = max_steering_angle
         self.required_angle_to_brake = 6  # expressed in degrees. Precisely 6,5520015705 degrees and 0.114354000000781 radians
         self.current_parking_phase = 0
+        self.car_initial_position_in_meters = None
 
         self.camera = self.getDevice("moving_car_camera")
         self.camera.enable(17)  # Enable the camera with a sampling period of 10ms
@@ -46,7 +53,7 @@ class CarController(Car):
         # CHECK
         """
         while self.step() != -1:
-            self.rotate(-5, True)
+            self.rotate(5, True)
             # self.rotate_x_rad(-5, True, 239, False)  # it rotates the car 90 degrees to the left
             # self.go_straight(5)
 
@@ -58,9 +65,6 @@ class CarController(Car):
             parking_entrance_crossed = False
 
             while self.step() != -1:
-                # CHECK
-                print("orient: ", self.get_car_orientation_in_degrees())
-
                 if self.message_queue.empty():
                     if not parking_entrance_crossed:
                         self.go_straight(2)
@@ -76,19 +80,27 @@ class CarController(Car):
                         self.stop()
 
                         self.message_queue.get()  # pop this message from the queue
-                    elif last_received_message == cns.GO_FORWARD_STRAIGHT or last_received_message == cns.GO_BACKWARD_STRAIGHT:
-                        if last_received_message == cns.GO_FORWARD_STRAIGHT:
-                            # CHECK
-                            self.go_straight(5)
-                        else:
-                            self.go_straight(-5)
+                    elif (last_received_message[0:cns.GO_FORWARD_STRAIGHT_LENGTH] == cns.GO_FORWARD_STRAIGHT or
+                          last_received_message[0:cns.GO_BACKWARD_STRAIGHT_LENGTH] == cns.GO_BACKWARD_STRAIGHT):
 
-                        self.message_queue.get()  # pop this message from the queue
+                        # CHECK
+                        print(f"Car position: {self.get_car_current_position()} meters")
+
+                        if last_received_message[0:cns.GO_FORWARD_STRAIGHT_LENGTH] == cns.GO_FORWARD_STRAIGHT:
+                            # CHECK
+                            print(f"str: {last_received_message[cns.GO_FORWARD_STRAIGHT_LENGTH:]}")
+
+                            self.go_straight(10, last_received_message[cns.GO_FORWARD_STRAIGHT_LENGTH:])
+                        elif last_received_message[0:cns.GO_BACKWARD_STRAIGHT_LENGTH] == cns.GO_BACKWARD_STRAIGHT:
+                            self.go_straight(-10, last_received_message[cns.GO_BACKWARD_STRAIGHT_LENGTH:])
                     elif last_received_message == cns.ROTATE_90_DEGREES_TO_RIGHT:
                         self.rotate_x_rad(5, True, 0, False)  # it rotates the car 90 degrees to the right
                     elif last_received_message == cns.ROTATE_90_DEGREES_TO_LEFT:
                         self.rotate_x_rad(5, False, 177, False)  # it rotates the car 90 degrees to the left
                     elif last_received_message == cns.START_PARKING_PHASE_IN_A_LEFT_SQUARE or last_received_message == cns.START_PARKING_PHASE_IN_A_RIGHT_SQUARE:
+                        # CHECK
+                        print("INIZIA LA ROTATION")
+
                         if last_received_message == cns.START_PARKING_PHASE_IN_A_RIGHT_SQUARE:
                             if self.current_parking_phase == 0:
                                 self.rotate_x_rad(2, False, 31, True)
@@ -150,9 +162,32 @@ class CarController(Car):
         self.setThrottle(0)  # stop the throttle
         self.setBrakeIntensity(1)  # apply full brakes
 
-    def go_straight(self, speed):
-        self.setCruisingSpeed(speed)
-        self.setSteeringAngle(0)  # Set steering angle to 0 (straight)
+    def go_straight(self, speed, distance_between_car_and_target_in_meters=None):
+        if distance_between_car_and_target_in_meters is None:
+            self.setCruisingSpeed(speed)
+            self.setSteeringAngle(0)  # Set steering angle to 0 (straight)
+            return
+
+        if self.car_initial_position_in_meters is None:
+            self.car_initial_position_in_meters = self.get_car_current_position()
+
+        car_current_position = self.get_car_current_position()
+        distance_moved = CarController.calculate_distance(self.car_initial_position_in_meters, car_current_position)
+
+        # CHECK
+        print(f"distance: {distance_moved}")
+
+        if distance_moved >= float(distance_between_car_and_target_in_meters):
+            self.stop()
+
+            self.car_initial_position_in_meters = None  # reset car_initial_position_in_meters
+            self.message_queue.get()  # pop GO_FORWARD_STRAIGHT or GO_BACKWARD_STRAIGHT message from the queue
+
+            # CHECK
+            print("FINITO IL GO STRAIGHT")
+        else:
+            self.setCruisingSpeed(speed)
+            self.setSteeringAngle(0)  # Set steering angle to 0 (straight)
 
     def rotate(self, speed, turn_to_the_right, steering_angle=None):
         if steering_angle is None:
@@ -168,10 +203,13 @@ class CarController(Car):
 
         # CHECK
         print(f"car_orientation: {car_orientation_in_degrees}")
+        print(f"current_parking_phase: {self.current_parking_phase}")
 
         # CHECK
         if car_orientation_in_degrees == target_angle:
             # the car has finished the maneuver of rotation
+
+            self.stop()
 
             if car_is_in_parking_phase:
                 self.current_parking_phase += 1  # jump to the next rotation
@@ -182,8 +220,6 @@ class CarController(Car):
                     cns.MANEUVER_COMPLETED)  # inform the CCTV camera that the maneuver is completed
                 print("MANEUVER COMPLETED")
                 self.message_queue.get()  # pop cns.MANEUVER_COMPLETED message from the queue
-
-            self.stop()
         else:
             # the car hasn't finished yet the maneuver of rotation
 
@@ -226,9 +262,19 @@ class CarController(Car):
 
         return math.atan2(compass_values[0], compass_values[1])  # orientation expressed in rad
 
+    def get_car_current_position(self):
+        translation_field = self.car_node.getField("translation")  # the translation field contains the position of the car
+        return translation_field.getSFVec3f()
+
     @staticmethod
     def trunc_to_two_decimal_places(num):
         return trunc(num * 100) / 100
+
+    @staticmethod
+    def calculate_distance(start_position, current_position):
+        return math.sqrt((start_position[0] - current_position[0]) ** 2 +
+                         (start_position[1] - current_position[1]) ** 2 +
+                         (start_position[2] - current_position[2]) ** 2)
 
 
 if __name__ == "__main__":

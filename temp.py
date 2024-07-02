@@ -174,8 +174,18 @@ prefix_of_parking_stall_id = str(in_the_highest_parking_rectangle) + str(in_the_
 
 print(prefix_of_parking_stall_id)
 """
-stri = "0"
+"""
+valori = [-8.72246, -8.79357, -8.72247, -8.82912, -8.79357, -8.79357, -8.79357, -8.79357, -8.93577]
+media = sum(valori) / len(valori)
 
-if stri[0] == 0:
-    print("MIAO")
+varianza = sum((xi - media) ** 2 for xi in valori) / len(valori)
 
+import math
+deviazione_standard = math.sqrt(varianza)
+
+print(deviazione_standard)
+"""
+target_coordinate_phase2_arr = {"lower_right_parking_square": 560,
+                                "lower_left_parking_square": 540,
+                                "higher_right_parking_square": 200,
+                                "higher_left_parking_square": 200}

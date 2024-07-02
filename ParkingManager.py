@@ -311,9 +311,6 @@ class ParkingManager:
                 self.free_parking_stalls.append(stall)
 
     def draw_all_parking_stalls(self):
-        # CHECK
-        print(self.free_parking_stalls)
-
         for stall in self.free_parking_stalls:
             if self.parking_stall_target is not None and stall["id"] == self.parking_stall_target["id"]:
                 stall_border_color = (255, 0, 255)  # violet
@@ -491,10 +488,10 @@ class ParkingManager:
         if self.current_driving_phase == 1:
             parking_stall_target_id = self.parking_stall_target["id"]
 
-            target_coordinate_phase2_arr = {"lower_right_parking_square": 548,
-                                            "lower_left_parking_square": 514,
-                                            "higher_right_parking_square": None,
-                                            "higher_left_parking_square": None}
+            target_coordinate_phase2_arr = {"lower_right_parking_square": 560,
+                                            "lower_left_parking_square": 540,
+                                            "higher_right_parking_square": 230,
+                                            "higher_left_parking_square": 210}
             # CHECK
             print(f'parking_stall_target_id: {self.parking_stall_target["id"]}')
 
@@ -521,7 +518,7 @@ class ParkingManager:
 
         if self.current_driving_phase == 2:
             # 2° phase
-            self.guide_the_car_until_the_target(self.guide_the_car_until_the_target_params["phase2"][0], self.guide_the_car_until_the_target_params["phase2"][1], self.guide_the_car_until_the_target_params["phase2"][2], True)  # 514 pixels for the lowest left square; 548 for the lower right square
+            self.guide_the_car_until_the_target(self.guide_the_car_until_the_target_params["phase2"][0], self.guide_the_car_until_the_target_params["phase2"][1], self.guide_the_car_until_the_target_params["phase2"][2])  # 514 pixels for the lowest left square; 548 for the lower right square
         elif self.current_driving_phase == 3:
             # 3° phase
             self.rotate_the_car(self.it_goes_to_a_right_square)
@@ -532,7 +529,12 @@ class ParkingManager:
         elif self.current_driving_phase == 5:
             # 5° phase
             self.guide_the_car_until_the_target(True, self.it_goes_to_a_right_square,
-                                                self.parking_stall_target["x2"] if self.it_goes_to_a_right_square else self.parking_stall_target["x1"], True)  # CHECK now the Citroen reaches the blue car; target_coordinate was 876, 821 and 429
+                                                self.parking_stall_target["x2"] if self.it_goes_to_a_right_square else
+                                                self.parking_stall_target["x1"])  # CHECK now the Citroen reaches the blue car; target_coordinate was 876, 821 and 429
+
+            # CHECK
+            print(f'parking_stall_target_coordinate: {self.parking_stall_target["x2"] if self.it_goes_to_a_right_square else self.parking_stall_target["x1"]}')
+
         elif self.current_driving_phase == 6:
             # 6° phase
             self.send_start_park(True)
@@ -548,7 +550,7 @@ class ParkingManager:
                 False)  # CHECK for the moment I assume that the free parking stall is behind the car that has to park
 
     def guide_the_car_until_the_target1(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinates,
-                                       target_coordinate, with_required_distance_to_brake):
+                                        target_coordinate, with_required_distance_to_brake):
         # CHECK controlla se la conversione in intero non dà problemi
         car_coordinate = int(
             self.car_about_to_park["box"]["x2"] if car_goes_parallel_to_x_axis else self.car_about_to_park["box"]["y1"])
@@ -583,8 +585,8 @@ class ParkingManager:
                 # the car that is about to park has not crossed the target yet ==> it has to continue to move to reach it
                 self.send_go_straight(True)
 
-    def guide_the_car_until_the_target(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinates,
-                                       target_coordinate, with_required_distance_to_brake):
+    def guide_the_car_until_the_target2(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinates,
+                                        target_coordinate, with_required_distance_to_brake):
         axis = 'x2' if car_goes_parallel_to_x_axis else 'y1'
         car_coordinate = int(self.car_about_to_park["box"][axis])
         required_distance_to_brake = self.required_distance_to_brake if with_required_distance_to_brake else 0
@@ -605,6 +607,32 @@ class ParkingManager:
                 self.current_driving_phase += 1
             else:
                 self.send_go_straight(True)
+
+    def guide_the_car_until_the_target(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinate,
+                                       target_coordinate):
+        _ = "y1" if not car_goes_parallel_to_x_axis else ("x2" if self.it_goes_to_a_right_square else "x1")
+        car_coordinate = int(self.car_about_to_park["box"][_])
+
+        if car_goes_to_greater_coordinate:
+            if car_coordinate < target_coordinate:
+                go_forward = True
+            else:
+                go_forward = False
+        else:
+            if car_coordinate > target_coordinate:
+                go_forward = True
+            else:
+                go_forward = False
+
+        distance_between_car_and_target_in_pixels = abs(target_coordinate - car_coordinate)
+        distance_between_car_and_target_in_meters = (distance_between_car_and_target_in_pixels * 29.7) / 676  # distance_between_car_and_target_in_meters [in meters] : distance_between_car_and_target_in_pixels [in pixels] = 29.7 [in meters] : 676 [in pixels]
+
+        # CHECK
+        print(f"distance_between_car_and_target_in_meters: {distance_between_car_and_target_in_meters}")
+
+        self.send_go_straight(go_forward, distance_between_car_and_target_in_meters)
+
+        self.current_driving_phase += 1
 
     def wait_the_car_until_it_finish_the_maneuver(self):
         if not self.message_queue.empty():
@@ -739,11 +767,11 @@ class ParkingManager:
     def send_stop(self):
         self.mqtt.publish_message(cns.STOP)
 
-    def send_go_straight(self, go_forward):
+    def send_go_straight(self, go_forward, distance_between_car_and_target_in_meters):
         if go_forward:
-            self.mqtt.publish_message(cns.GO_FORWARD_STRAIGHT)
+            self.mqtt.publish_message(cns.GO_FORWARD_STRAIGHT + str(distance_between_car_and_target_in_meters))
         elif not go_forward:
-            self.mqtt.publish_message(cns.GO_BACKWARD_STRAIGHT)
+            self.mqtt.publish_message(cns.GO_BACKWARD_STRAIGHT + str(distance_between_car_and_target_in_meters))
 
     def send_parking_entrance_crossed(self):
         self.mqtt.publish_message(cns.PARKING_ENTRANCE_CROSSED)
