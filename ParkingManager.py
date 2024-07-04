@@ -548,9 +548,9 @@ class ParkingManager:
             # 8° phase
 
             if self.it_goes_to_a_lower_parking_stall:
-                self.guide_the_car_until_the_target(False, False, self.parking_stall_target["y1"])
-            else:
                 self.guide_the_car_until_the_target(False, True, self.parking_stall_target["y1"])
+            else:
+                self.guide_the_car_until_the_target(False, False, self.parking_stall_target["y1"])
 
     def guide_the_car_until_the_target1(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinates,
                                         target_coordinate, with_required_distance_to_brake):

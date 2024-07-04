@@ -130,7 +130,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.5773502691896257 0.5773502691896257 0.5773502691896257 2.0943245915045035
-  position 145.01022184216222 -11.023468252500168 57.114633369595914
+  position 145.01145802816856 -11.022232116817333 26.749204326519884
   near 1
   follow "car"
   followType "None"
@@ -433,7 +433,7 @@ Solid {
           name "vehicle(7)"
         }
         CitroenCZeroSimple {
-          translation 9.31 -11.7301 0.37
+          translation 9.31 -19.7401 0.37
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(6)"
         }
@@ -1035,7 +1035,7 @@ GenericTrafficLight {
   startGreen FALSE
   greenTime 10
   redTime 10
-  state "red"
+  state "green"
 }
 CrossRoadsTrafficLight {
   translation 45 -45 0
