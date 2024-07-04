@@ -26,6 +26,7 @@ class CarController(Car):
         self.max_steering_angle = max_steering_angle
         self.required_angle_to_brake = 6  # expressed in degrees. Precisely 6,5520015705 degrees and 0.114354000000781 radians
         self.current_parking_phase = 0
+        self.approach_to_the_parking_stall_completed = False
         self.car_initial_position_in_meters = None
 
         self.camera = self.getDevice("moving_car_camera")
@@ -53,9 +54,9 @@ class CarController(Car):
         # CHECK
         """
         while self.step() != -1:
-            self.rotate(5, True)
-            # self.rotate_x_rad(-5, True, 239, False)  # it rotates the car 90 degrees to the left
-            # self.go_straight(5)
+            # self.rotate(2, False)
+            self.rotate_x_rad(5, False, 90, False)  # it rotates the car 90 degrees to the left
+            # self.go_straight(1, 0.551)
 
             # CHECK
             print(self.get_car_orientation_in_degrees())
@@ -98,31 +99,36 @@ class CarController(Car):
                     elif last_received_message == cns.ROTATE_90_DEGREES_TO_LEFT:
                         self.rotate_x_rad(5, False, 177, False)  # it rotates the car 90 degrees to the left
                     elif last_received_message == cns.START_PARKING_PHASE_IN_A_LEFT_SQUARE or last_received_message == cns.START_PARKING_PHASE_IN_A_RIGHT_SQUARE:
-                        # CHECK
-                        print("INIZIA LA ROTATION")
-
                         if last_received_message == cns.START_PARKING_PHASE_IN_A_RIGHT_SQUARE:
                             if self.current_parking_phase == 0:
+                                self.go_straight(1, 0.551, True)
+                            if self.current_parking_phase == 1:
                                 self.rotate_x_rad(2, False, 31, True)
-                            elif self.current_parking_phase == 1:
-                                self.rotate_x_rad(-2, True, 61, True)
                             elif self.current_parking_phase == 2:
-                                self.rotate_x_rad(2, False, 71, True)
+                                self.rotate_x_rad(-2, True, 61, True)
                             elif self.current_parking_phase == 3:
-                                self.rotate_x_rad(-2, True, 85, True)
+                                self.rotate_x_rad(2, False, 71, True)
                             elif self.current_parking_phase == 4:
-                                self.rotate_x_rad(2, False, 89, True)
+                                self.rotate_x_rad(-2, True, 85, True)
+                            elif self.current_parking_phase == 5:
+                                self.rotate_x_rad(1, False, 90, True)  # it was 89
+                            elif self.current_parking_phase == 6:
+                                self.approach_to_the_parking_stall_completed = True
                         else:
                             if self.current_parking_phase == 0:
+                                self.go_straight(1, 0.551, True)
+                            if self.current_parking_phase == 1:
                                 self.rotate_x_rad(2, False, 210, True)
-                            elif self.current_parking_phase == 1:
-                                self.rotate_x_rad(-2, True, 239, True)
                             elif self.current_parking_phase == 2:
-                                self.rotate_x_rad(2, False, 250, True)
+                                self.rotate_x_rad(-2, True, 239, True)
                             elif self.current_parking_phase == 3:
+                                self.rotate_x_rad(2, False, 250, True)
+                            elif self.current_parking_phase == 4:
                                 self.rotate_x_rad(-2, True, 269, True)
+                            elif self.current_parking_phase == 5:
+                                self.approach_to_the_parking_stall_completed = True
 
-                        if self.current_parking_phase == 5:
+                        if self.approach_to_the_parking_stall_completed:
                             # approach to the parking stall completed
 
                             self.mqtt.publish_message(cns.APPROACH_TO_THE_PARKING_STALL_COMPLETED)
@@ -162,7 +168,7 @@ class CarController(Car):
         self.setThrottle(0)  # stop the throttle
         self.setBrakeIntensity(1)  # apply full brakes
 
-    def go_straight(self, speed, distance_between_car_and_target_in_meters=None):
+    def go_straight(self, speed, distance_between_car_and_target_in_meters=None, car_is_in_parking_phase=False):
         if distance_between_car_and_target_in_meters is None:
             self.setCruisingSpeed(speed)
             self.setSteeringAngle(0)  # Set steering angle to 0 (straight)
@@ -181,7 +187,11 @@ class CarController(Car):
             self.stop()
 
             self.car_initial_position_in_meters = None  # reset car_initial_position_in_meters
-            self.message_queue.get()  # pop GO_FORWARD_STRAIGHT or GO_BACKWARD_STRAIGHT message from the queue
+
+            if car_is_in_parking_phase:
+                self.current_parking_phase += 1  # jump to the next phase
+            else:
+                self.message_queue.get()  # pop GO_FORWARD_STRAIGHT or GO_BACKWARD_STRAIGHT message from the queue
 
             # CHECK
             print("FINITO IL GO STRAIGHT")
@@ -198,15 +208,42 @@ class CarController(Car):
 
         self.setCruisingSpeed(speed)
 
+    def rotate_x_rad_old(self, speed, turn_to_the_right, target_angle, car_is_in_parking_phase, steering_angle=None):
+        car_orientation_in_degrees = self.get_car_orientation_in_degrees()
+
+        # CHECK
+        print(f"car_orientation: {car_orientation_in_degrees}")
+
+        # CHECK
+        if car_orientation_in_degrees == target_angle:
+            # the car has finished the maneuver of rotation
+
+            self.stop()
+
+            if car_is_in_parking_phase:
+                self.current_parking_phase += 1  # jump to the next rotation
+            else:
+                self.message_queue.get()  # pop cns.ROTATE_90_DEGREES_TO_RIGHT or cns.ROTATE_90_DEGREES_TO_LEFT message from the queue
+
+                self.mqtt.publish_message(
+                    cns.MANEUVER_COMPLETED)  # inform the CCTV camera that the maneuver is completed
+                print("MANEUVER COMPLETED")
+                self.message_queue.get()  # pop cns.MANEUVER_COMPLETED message from the queue
+        else:
+            # the car hasn't finished yet the maneuver of rotation
+
+            self.rotate(speed, turn_to_the_right, steering_angle)
+
     def rotate_x_rad(self, speed, turn_to_the_right, target_angle, car_is_in_parking_phase, steering_angle=None):
         car_orientation_in_degrees = self.get_car_orientation_in_degrees()
 
         # CHECK
         print(f"car_orientation: {car_orientation_in_degrees}")
-        print(f"current_parking_phase: {self.current_parking_phase}")
+
+        angle_tolerance = 1
 
         # CHECK
-        if car_orientation_in_degrees == target_angle:
+        if abs(car_orientation_in_degrees - target_angle) <= angle_tolerance:
             # the car has finished the maneuver of rotation
 
             self.stop()

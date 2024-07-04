@@ -56,6 +56,7 @@ class ParkingManager:
 
         self.guide_the_car_until_the_target_params = None
         self.it_goes_to_a_right_square = None
+        self.it_goes_to_a_lower_parking_stall = None
 
         self.mqtt = MQTTClient(cns.MQTT_HOSTNAME, cns.MQTT_TOPIC)
 
@@ -303,7 +304,7 @@ class ParkingManager:
             current_stall_is_occupied = False
 
             for car in self.detected_cars:
-                if self.compute_intersection_between_car_box_and_stall_box(car["box"], stall) > 400:  # 400 pixels
+                if self.compute_intersection_between_car_box_and_stall_box(car["box"], stall) > 800:  # 800 pixels
                     self.occupied_parking_stalls.append(stall)
                     current_stall_is_occupied = True
 
@@ -508,11 +509,12 @@ class ParkingManager:
                 target_coordinate_phase2 = target_coordinate_phase2_arr["higher_left_parking_square"]
                 self.it_goes_to_a_right_square = False
 
+            self.it_goes_to_a_lower_parking_stall = True if parking_stall_target_id[-1] == 'L' else False
+
             # CHECK
             print(f"target: {target_coordinate_phase2}")
 
-            self.guide_the_car_until_the_target_params = {"phase2": [False, False, target_coordinate_phase2],
-                                                          "phase3": []}
+            self.guide_the_car_until_the_target_params = {"phase2": [False, False, target_coordinate_phase2]}
 
             self.current_driving_phase += 1
 
@@ -534,7 +536,6 @@ class ParkingManager:
 
             # CHECK
             print(f'parking_stall_target_coordinate: {self.parking_stall_target["x2"] if self.it_goes_to_a_right_square else self.parking_stall_target["x1"]}')
-
         elif self.current_driving_phase == 6:
             # 6° phase
             self.send_start_park(True)
@@ -546,8 +547,10 @@ class ParkingManager:
         elif self.current_driving_phase == 8:
             # 8° phase
 
-            self.send_go_straight(
-                False)  # CHECK for the moment I assume that the free parking stall is behind the car that has to park
+            if self.it_goes_to_a_lower_parking_stall:
+                self.guide_the_car_until_the_target(False, False, self.parking_stall_target["y1"])
+            else:
+                self.guide_the_car_until_the_target(False, True, self.parking_stall_target["y1"])
 
     def guide_the_car_until_the_target1(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinates,
                                         target_coordinate, with_required_distance_to_brake):
