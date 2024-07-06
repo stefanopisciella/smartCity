@@ -538,7 +538,7 @@ class ParkingManager:
             print(f'parking_stall_target_coordinate: {self.parking_stall_target["x2"] if self.it_goes_to_a_right_square else self.parking_stall_target["x1"]}')
         elif self.current_driving_phase == 6:
             # 6° phase
-            self.send_start_park(True)
+            self.send_start_park(self.it_goes_to_a_right_square)
 
             self.current_driving_phase += 1  # jump to the next phase
         elif self.current_driving_phase == 7:
@@ -610,6 +610,32 @@ class ParkingManager:
                 self.current_driving_phase += 1
             else:
                 self.send_go_straight(True)
+
+    def guide_the_car_until_the_target_old(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinate,
+                                       target_coordinate):
+        _ = "y1" if not car_goes_parallel_to_x_axis else ("x2" if self.it_goes_to_a_right_square else "x1")
+        car_coordinate = int(self.car_about_to_park["box"][_])
+
+        if car_goes_to_greater_coordinate:
+            if car_coordinate < target_coordinate:
+                go_forward = True
+            else:
+                go_forward = False
+        else:
+            if car_coordinate > target_coordinate:
+                go_forward = True
+            else:
+                go_forward = False
+
+        distance_between_car_and_target_in_pixels = abs(target_coordinate - car_coordinate)
+        distance_between_car_and_target_in_meters = (distance_between_car_and_target_in_pixels * 29.7) / 676  # distance_between_car_and_target_in_meters [in meters] : distance_between_car_and_target_in_pixels [in pixels] = 29.7 [in meters] : 676 [in pixels]
+
+        # CHECK
+        print(f"distance_between_car_and_target_in_meters: {distance_between_car_and_target_in_meters}")
+
+        self.send_go_straight(go_forward, distance_between_car_and_target_in_meters)
+
+        self.current_driving_phase += 1
 
     def guide_the_car_until_the_target(self, car_goes_parallel_to_x_axis, car_goes_to_greater_coordinate,
                                        target_coordinate):

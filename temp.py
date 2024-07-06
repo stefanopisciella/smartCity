@@ -185,7 +185,16 @@ deviazione_standard = math.sqrt(varianza)
 
 print(deviazione_standard)
 """
-target_coordinate_phase2_arr = {"lower_right_parking_square": 560,
-                                "lower_left_parking_square": 540,
-                                "higher_right_parking_square": 200,
-                                "higher_left_parking_square": 200}
+import queue
+
+# Create a queue
+q = queue.Queue()
+
+# Add elements to the queue
+q.put("Element 1")
+q.put("Element 2")
+q.put("Element 3")
+
+# Print the content of the queue
+print(list(q.queue))
+

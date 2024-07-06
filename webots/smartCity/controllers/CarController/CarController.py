@@ -66,6 +66,10 @@ class CarController(Car):
             parking_entrance_crossed = False
 
             while self.step() != -1:
+                # CHECK
+                # print("queue", list(self.message_queue.queue))
+                print(f"parking phase: {self.current_parking_phase}")
+
                 if self.message_queue.empty():
                     if not parking_entrance_crossed:
                         self.go_straight(2)
@@ -124,7 +128,7 @@ class CarController(Car):
                             elif self.current_parking_phase == 3:
                                 self.rotate_x_rad(2, False, 250, True)
                             elif self.current_parking_phase == 4:
-                                self.rotate_x_rad(-2, True, 269, True)
+                                self.rotate_x_rad(-2, True, 270, True)  # it was 269 degrees
                             elif self.current_parking_phase == 5:
                                 self.approach_to_the_parking_stall_completed = True
 
@@ -212,9 +216,6 @@ class CarController(Car):
         car_orientation_in_degrees = self.get_car_orientation_in_degrees()
 
         # CHECK
-        print(f"car_orientation: {car_orientation_in_degrees}")
-
-        # CHECK
         if car_orientation_in_degrees == target_angle:
             # the car has finished the maneuver of rotation
 
@@ -246,6 +247,9 @@ class CarController(Car):
         if abs(car_orientation_in_degrees - target_angle) <= angle_tolerance:
             # the car has finished the maneuver of rotation
 
+            # CHECK
+            print("ANGOLO RAGGIUNTO")
+
             self.stop()
 
             if car_is_in_parking_phase:
@@ -259,6 +263,9 @@ class CarController(Car):
                 self.message_queue.get()  # pop cns.MANEUVER_COMPLETED message from the queue
         else:
             # the car hasn't finished yet the maneuver of rotation
+
+            # CHECK
+            print(f"NO: {car_orientation_in_degrees}")
 
             self.rotate(speed, turn_to_the_right, steering_angle)
 
