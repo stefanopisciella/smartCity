@@ -120,6 +120,7 @@ class CarController(Car):
                                 self.approach_to_the_parking_stall_completed = True
                         else:
                             if self.current_parking_phase == 0:
+                                # CHECK
                                 self.go_straight(1, 0.551, True)
                             if self.current_parking_phase == 1:
                                 self.rotate_x_rad(2, False, 210, True)

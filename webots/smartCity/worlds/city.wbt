@@ -130,7 +130,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.5773502691896257 0.5773502691896257 0.5773502691896257 2.0943245915045035
-  position 145.0097079776047 -11.023982096138871 69.73710092465336
+  position 140.44302859954283 -5.972954200555289 86.05421594650356
   near 1
   follow "car"
   followType "None"
@@ -428,7 +428,7 @@ Solid {
           name "vehicle(8)"
         }
         LincolnMKZSimple {
-          translation 6.95 -12.02 0.37
+          translation 6.95 -12.29 0.37
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(7)"
         }
@@ -449,7 +449,7 @@ Solid {
           color 1 0 0
         }
         ToyotaPriusSimple {
-          translation 7.01 -4.36 0.4
+          translation 7.01 -4.28 0.4
           rotation 0 0 1 1.5708
           name "vehicle(4)"
         }
@@ -530,17 +530,17 @@ Solid {
       translation 122 -0.26 0.06
       children [
         RangeRoverSportSVRSimple {
-          translation 14.12 -11.68 0.37
+          translation 14.12 -11.91 0.37
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(10)"
         }
         LincolnMKZSimple {
-          translation 11.77 -14.63 0.37
+          translation 11.77 -14.74 0.37
           rotation 0 0 1 1.5708
           name "vehicle(9)"
         }
         ToyotaPriusSimple {
-          translation 9.41 -11.56 0.4
+          translation 9.41 -18.58 0.4
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(8)"
         }
@@ -567,7 +567,7 @@ Solid {
           name "vehicle(4)"
         }
         RangeRoverSportSVRSimple {
-          translation 7.12 1.69 0.37
+          translation 7.12 -4.31 0.37
           rotation 0 0 1 1.5708
           name "vehicle(3)"
         }
@@ -577,13 +577,13 @@ Solid {
           color 1 0 0
         }
         TeslaModel3 {
-          translation 14.208900170014118 -4.415106415558522 0.2056226963643284
+          translation 14.209 -4.26513 0.206789
           rotation 0.003862243552763367 -0.0038624468096037446 0.9999850821784203 1.5707588760189082
           color 1 0 0
           name "vehicle(30)"
         }
         CitroenCZeroSimple {
-          translation 9.48 -2.01009 0.37
+          translation 9.48 3.30991 0.37
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(1)"
         }
