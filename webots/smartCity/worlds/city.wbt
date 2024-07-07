@@ -129,8 +129,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.5773502691896257 0.5773502691896257 0.5773502691896257 2.0943245915045035
-  position 140.44302859954283 -5.972954200555289 86.05421594650356
+  orientation 0.5773502691896257 -0.5773502691896257 -0.5773502691896257 4.188860715675084
+  position 144.2682916664189 -1.950003676341132 69.6133406192553
   near 1
   follow "car"
   followType "None"
@@ -384,6 +384,26 @@ CurvedRoadSegment {
 Solid {
   translation 0 -0.2 0
   children [
+    ToyotaPriusSimple {
+      translation 148.482 30.1812 0.4
+      rotation 0 0 1 1.57
+      color 1 0 1
+      name "vehicle(3)"
+    }
+    RangeRoverSportSVRSimple {
+      translation 131.482 24.5349 0.4
+      rotation 0 0 1 1.57
+      name "vehicle(2)"
+    }
+    BmwX5Simple {
+      translation 133.854 9.65565 0.4
+      rotation 0 0 1 1.57
+      name "vehicle(1)"
+    }
+    CitroenCZeroSimple {
+      translation 136.16 9.49349 0.4
+      rotation 0 0 1 1.57
+    }
     Road {
       translation 139.91 -16.5 0.05
       rotation 0 0 1 1.5707963267948968
@@ -406,60 +426,72 @@ Solid {
       translation 141.47 -0.26 0.06
       children [
         CitroenCZeroSimple {
-          translation 14.0854 -14.3513 0.4
+          translation 4.51788 9.90811 0.4
+          rotation 0 0 1 1.57
+          color 0 0.5 1
+          name "vehicle(13)"
+        }
+        RangeRoverSportSVRSimple {
+          translation 4.54066 0.84051 0.4
+          rotation 0 0 1 1.57
+          color 0 1 0
+          name "vehicle(12)"
+        }
+        CitroenCZeroSimple {
+          translation 14.0856 -13.7913 0.4
           rotation 0 0 1 1.57
           color 0 1 0
           name "vehicle(11)"
         }
         RangeRoverSportSVRSimple {
-          translation 4.52999 -14.67 0.37
+          translation 4.52998 -14.18 0.37
           rotation 0 0 1 1.5708
           name "vehicle(10)"
         }
         ToyotaPriusSimple {
-          translation 2.29001 -11.82 0.4
+          translation 2.29001 -11.91 0.4
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(9)"
         }
         TeslaModel3 {
-          translation 11.7281 -12.2307 0.208868
-          rotation -0.0038405077514185094 -0.003840310685535794 -0.9999852511482606 1.570862135037939
+          translation 11.728499994077765 -11.450813636034491 0.20370767516841326
+          rotation -0.003901081116711185 -0.0039008809447814365 -0.9999847822311975 1.5708626037960138
           color 1 0 0
           name "vehicle(8)"
         }
         LincolnMKZSimple {
-          translation 6.95 -12.29 0.37
+          translation 6.95 -28.92 0.37
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(7)"
         }
         CitroenCZeroSimple {
-          translation 9.31 -12.0001 0.37
+          translation 9.31 -11.3401 0.37
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(6)"
         }
         BmwX5Simple {
-          translation 11.83 -1.6 0.37
+          translation 11.83 -1.54 0.37
           rotation 0 0 1 -1.5707953071795862
           color 0 0 1
           name "vehicle(5)"
         }
         TeslaModel3 {
-          translation 4.658479922901506 -1.6088666458006675 0.20561198175707712
-          rotation -0.0038629593418765882 -0.003862678147987769 -0.9999850785199987 1.5708837868269312
+          translation 4.658429991731367 -1.5689623134613648 0.20542729585352848
+          rotation -0.0038654696404508615 -0.003865188255548547 -0.9999850591204891 1.5708838060579815
           color 1 0 0
         }
         ToyotaPriusSimple {
-          translation 7.01 -4.28 0.4
+          translation 7.01001 -4.17 0.4
           rotation 0 0 1 1.5708
           name "vehicle(4)"
         }
         RangeRoverSportSVRSimple {
-          translation 9.43 -1.7 0.37
+          translation 9.43 -1.61 0.37
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(3)"
         }
         LincolnMKZSimple {
-          translation 14.1 -4.46 0.37
+          translation 14.1 -4.34 0.37
           rotation 0 0 1 1.5708
           name "vehicle(2)"
         }
@@ -529,66 +561,83 @@ Solid {
     Solid {
       translation 122 -0.26 0.06
       children [
+        BmwX5Simple {
+          translation 9.58933 30.0024 0.4
+          rotation 0 0 1 1.57
+          name "vehicle(13)"
+        }
+        ToyotaPriusSimple {
+          translation 11.9284 0.69374 0.4
+          rotation 0 0 1 1.57
+          color 0 0 0
+          name "vehicle(12)"
+        }
         RangeRoverSportSVRSimple {
-          translation 14.12 -11.91 0.37
+          translation 14.1769 -4.11129 0.4
+          rotation 0 0 1 1.57
+          color 1 1 1
+          name "vehicle(11)"
+        }
+        RangeRoverSportSVRSimple {
+          translation 14.12 -12.1 0.37
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(10)"
         }
         LincolnMKZSimple {
-          translation 11.77 -14.74 0.37
+          translation 11.77 -14.92 0.37
           rotation 0 0 1 1.5708
           name "vehicle(9)"
         }
         ToyotaPriusSimple {
-          translation 9.41 -18.58 0.4
+          translation 9.41 -11.7 0.4
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(8)"
         }
         BmwX5Simple {
-          translation 7.06006 -27.53 0.37
+          translation 7.06006 -14.68 0.37
           rotation 0 0 1 1.5708
           color 0 0 1
           name "vehicle(7)"
         }
         TeslaModel3 {
-          translation 4.61937 -11.9641 0.208616
-          rotation -0.003851957255211941 -0.003851736547144115 -0.9999851631653719 1.5708682068200144
+          translation 4.61844 -29.3341 0.34142
+          rotation -0.003832552935711156 -0.0038323333254471703 -0.9999853122717741 1.5708680575434038
           color 1 0 0
           name "vehicle(6)"
         }
         CitroenCZeroSimple {
-          translation 2.22001 -14.4601 0.37
+          translation 2.22001 -13.8301 0.37
           rotation 0 0 1 1.5708
           name "vehicle(5)"
         }
         ToyotaPriusSimple {
-          translation 11.92 -4.45 0.4
+          translation 11.92 -4.31 0.4
           rotation 0 0 1 1.5708
           name "vehicle(4)"
         }
         RangeRoverSportSVRSimple {
-          translation 7.12 -4.31 0.37
+          translation 7.12 -4.11 0.37
           rotation 0 0 1 1.5708
           name "vehicle(3)"
         }
         BmwX5Simple {
-          translation 2.1 -1.72 0.37
+          translation 2.1 -1.5 0.37
           rotation 0 0 1 -1.5707953071795862
           color 1 0 0
         }
         TeslaModel3 {
-          translation 14.209 -4.26513 0.206789
-          rotation 0.003862243552763367 -0.0038624468096037446 0.9999850821784203 1.5707588760189082
+          translation 14.209000004092843 0.6648504567833042 0.23335904649187067
+          rotation 0.003137677563549121 -0.0031378428482781006 0.9999901544124156 1.570753803912564
           color 1 0 0
           name "vehicle(30)"
         }
         CitroenCZeroSimple {
-          translation 9.48 3.30991 0.37
+          translation 9.48 -1.29009 0.37
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(1)"
         }
         LincolnMKZSimple {
-          translation 4.65 -1.67 0.37
+          translation 4.65 -1.63 0.37
           rotation 0 0 1 -1.5707953071795862
           name "vehicle(2)"
         }
@@ -653,6 +702,12 @@ Solid {
     Solid {
       translation 141.47 14.04 0.06
       children [
+        TeslaModel3Simple {
+          translation 7.0647 11.0742 0.4
+          rotation 0 0 1 1.57
+          color 0 0 0
+          name "vehicle(1)"
+        }
         TeslaModel3Simple {
           translation 2.25675 -4.15177 0.4
           rotation 0 0 1 1.57
@@ -720,9 +775,9 @@ Solid {
       translation 122 14.04 0.06
       children [
         TeslaModel3 {
-          translation 21.680495100785606 -14.427503191539179 0.205499581758338
-          rotation 0.003870453662719049 -0.0038433321561245157 0.9999851240825447 1.577843387925864
-          color 1 0 0
+          translation 21.644399238640773 -13.696791716594396 0.20958173998345175
+          rotation 0.0037601370162905585 -0.0037337885669741304 0.9999859599977171 1.577842552190324
+          color 1 0 1
         }
         ParkingLines {
           translation 1 -5.81 0.04
@@ -1035,7 +1090,7 @@ GenericTrafficLight {
   startGreen FALSE
   greenTime 10
   redTime 10
-  state "red"
+  state "green"
 }
 CrossRoadsTrafficLight {
   translation 45 -45 0
@@ -1491,7 +1546,7 @@ SpeedLimitSign {
 }
 TrafficCone {
   translation -50.817354704220726 33.90680001883571 -0.004102277952450384
-  rotation -0.00028398053550445483 0.9999998456729724 0.00047750297062536023 0.01358885350923965
+  rotation -0.00028398053550728617 0.9999998456729723 0.0004775029706253684 0.013588853509239664
   physics Physics {
     density -1
     mass 1
@@ -1499,7 +1554,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -53.344754704220726 33.90680001883571 -0.004102277952450384
-  rotation -0.00028398053550445483 0.9999998456729724 0.00047750297062536023 0.01358885350923965
+  rotation -0.00028398053550728617 0.9999998456729723 0.0004775029706253684 0.013588853509239664
   name "traffic cone(1)"
   physics Physics {
     density -1
@@ -1508,7 +1563,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -48.16815470422073 34.00950001883571 -0.004102277952450384
-  rotation -0.00028398053550545446 0.9999998456729723 0.00047750297065313435 0.013588853509239664
+  rotation -0.00028398053550738353 0.9999998456729723 0.0004775029706531372 0.013588853509239709
   name "traffic cone(2)"
   physics Physics {
     density -1
@@ -1517,7 +1572,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -45.10425399639462 26.354345246538532 -0.004102277952450412
-  rotation -0.00022832830110328795 0.999970235914078 -0.007712013493884228 0.013589256083788834
+  rotation -0.0002283283010997797 0.9999702359140781 -0.007712013493884265 0.013589256083788848
   name "traffic cone(3)"
   physics Physics {
     density -1
@@ -1526,7 +1581,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -45.56035399639463 33.90824524653776 -0.004102277952450412
-  rotation -0.00022832830110275932 0.9999702359140781 -0.0077120134939058175 0.013589256083788862
+  rotation -0.00022832830110176025 0.9999702359140779 -0.00771201349390595 0.01358925608378885
   name "traffic cone(4)"
   physics Physics {
     density -1
@@ -1535,7 +1590,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -45.09525470422073 16.183200018833894 -0.004102277952450384
-  rotation -0.00028398053550461773 0.9999998456729725 0.0004775029705316597 0.01358885350923964
+  rotation -0.0002839805355043747 0.9999998456729724 0.0004775029705316256 0.013588853509239678
   name "traffic cone(5)"
   physics Physics {
     density -1
@@ -1544,7 +1599,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -45.29575470422073 5.310340018834371 -0.004102277952450412
-  rotation -0.0002839805355107835 0.9999998456729724 0.00047750297051428833 0.013588853509239465
+  rotation -0.00028398053551200434 0.9999998456729724 0.00047750297051416435 0.013588853509239468
   name "traffic cone(6)"
   physics Physics {
     density -1
@@ -1553,7 +1608,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -44.78215470422073 -7.3391499811656296 -0.004102277952450412
-  rotation -0.0002839805355107835 0.9999998456729724 0.00047750297051428833 0.013588853509239465
+  rotation -0.00028398053551200434 0.9999998456729724 0.00047750297051416435 0.013588853509239468
   name "traffic cone(7)"
   physics Physics {
     density -1
@@ -1562,7 +1617,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 33.97404529577927 -53.7607999811643 -0.004102277952450384
-  rotation -0.00028398053550545446 0.9999998456729723 0.00047750297065313435 0.013588853509239664
+  rotation -0.00028398053550738353 0.9999998456729723 0.0004775029706531372 0.013588853509239709
   name "traffic cone(8)"
   physics Physics {
     density -1
@@ -1571,7 +1626,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 33.96964529577928 -51.434999981164296 -0.004102277952450384
-  rotation -0.000283980535503351 0.9999998456729723 0.0004775029706109382 0.01358885350923969
+  rotation -0.00028398053550523247 0.9999998456729724 0.00047750297061085236 0.013588853509239687
   name "traffic cone(9)"
   physics Physics {
     density -1
@@ -1580,7 +1635,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 33.953545295779264 -48.95439998116429 -0.004102277952450384
-  rotation -0.0002839805355068346 0.9999998456729724 0.0004775029706272025 0.013588853509239671
+  rotation -0.0002839805355054366 0.9999998456729723 0.0004775029706272188 0.013588853509239641
   name "traffic cone(10)"
   physics Physics {
     density -1
@@ -1589,7 +1644,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 33.71714529577927 -45.72339998116429 -0.004102277952450384
-  rotation -0.00028398053550545446 0.9999998456729723 0.00047750297065313435 0.013588853509239664
+  rotation -0.00028398053550738353 0.9999998456729723 0.0004775029706531372 0.013588853509239709
   name "traffic cone(11)"
   physics Physics {
     density -1
@@ -1598,7 +1653,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -35.36085470422073 -30.233899981166108 -0.004102277952450412
-  rotation -0.0002839805355075467 0.9999998456729724 0.00047750297053694967 0.013588853509239756
+  rotation -0.0002839805355076143 0.9999998456729725 0.0004775029705370673 0.013588853509239713
   name "traffic cone(12)"
   physics Physics {
     density -1
@@ -1607,7 +1662,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -42.324754704220744 -18.60839998116611 -0.004102277952450412
-  rotation -0.00028398053550922494 0.9999998456729724 0.00047750297054232385 0.013588853509239688
+  rotation -0.00028398053550851907 0.9999998456729725 0.0004775029705424933 0.013588853509239702
   name "traffic cone(13)"
   physics Physics {
     density -1
@@ -1616,7 +1671,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -26.685754704219946 -38.23719998116428 -0.004102277952450384
-  rotation -0.0002839805355098498 0.9999998456729724 0.000477502970601204 0.01358885350923961
+  rotation -0.0002839805355093999 0.9999998456729724 0.0004775029706011914 0.0135888535092396
   name "traffic cone(14)"
   physics Physics {
     density -1
@@ -1625,7 +1680,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -13.72645470422045 -43.78639998116428 -0.004102277952450467
-  rotation -0.00028398053551038086 0.9999998456729724 0.00047750297057539456 0.013588853509239407
+  rotation -0.00028398053550930387 0.9999998456729724 0.00047750297057544086 0.013588853509239404
   name "traffic cone(15)"
   physics Physics {
     density -1
@@ -1633,8 +1688,8 @@ TrafficCone {
   }
 }
 TrafficCone {
-  translation -1.3851447042204295 -44.86729998116429 -0.004102277952450384
-  rotation -0.00028398053551185706 0.9999998456729724 0.00047750297060671656 0.013588853509239584
+  translation -1.3851447042204295 -44.86729998116429 -0.004102277952450412
+  rotation -0.0002839805355060975 0.9999998456729723 0.0004775029706069216 0.01358885350923967
   name "traffic cone(16)"
   physics Physics {
     density -1
@@ -1643,7 +1698,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 11.21744529577955 -44.89549998116428 -0.004102277952450467
-  rotation -0.00028398053551038086 0.9999998456729724 0.00047750297057539456 0.013588853509239407
+  rotation -0.00028398053550930387 0.9999998456729724 0.00047750297057544086 0.013588853509239404
   name "traffic cone(17)"
   physics Physics {
     density -1
@@ -1652,7 +1707,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 22.153045295780068 -44.815199981164284 -0.004102277952450384
-  rotation -0.00028398053550850595 0.9999998456729723 0.0004775029705852935 0.013588853509239588
+  rotation -0.0002839805355101311 0.9999998456729723 0.00047750297058530466 0.013588853509239586
   name "traffic cone(18)"
   physics Physics {
     density -1
@@ -1701,7 +1756,7 @@ HighwayPole {
 }
 OilBarrel {
   translation -110.31684 -66.875162 0.5992152000000002
-  rotation 9.987396750809241e-18 1.2283117007502537e-17 1 3.1415900000000048
+  rotation 1.757433860987331e-17 2.0185169902475994e-17 1 3.1415900000000048
   height 1.2
   radius 0.4
   physics Physics {
@@ -1713,7 +1768,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -107.04991 -33.037806 0.5992152000000002
-  rotation -4.7332567050249744e-18 -4.510988317915345e-18 1 3.1415899999999994
+  rotation -4.4687790880377844e-18 3.412145707921415e-18 1 3.1415899999999994
   name "oil barrel(1)"
   height 1.2
   radius 0.4
@@ -1726,7 +1781,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -103.169 -54.770003 0.5992152000000002
-  rotation -4.7332567050249744e-18 -4.510988317915345e-18 1 3.1415899999999994
+  rotation -4.4687790880377844e-18 3.412145707921415e-18 1 3.1415899999999994
   name "oil barrel(2)"
   height 1.2
   radius 0.4
@@ -1739,7 +1794,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -45 -105.104 0.5992152000000002
-  rotation -6.280455052475804e-18 2.309294027818806e-17 -0.9999999999999999 1.5707953071795862
+  rotation 3.985112591518492e-18 -4.768511978159928e-18 -0.9999999999999999 1.5707953071795862
   name "oil barrel(3)"
   height 1.2
   radius 0.4
@@ -1752,7 +1807,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -21.3988 -45.2699 0.5992152000000002
-  rotation -3.3681296789444226e-17 -3.85663878084564e-18 -1 1.1781
+  rotation -4.35549705506012e-17 1.64537533141795e-17 -1 1.1781
   name "oil barrel(4)"
   height 1.2
   radius 0.4
@@ -1765,7 +1820,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -22.9161 -45.3401 0.5992152000000002
-  rotation -6.761873409945161e-18 1.8128393586099263e-18 1 1.9634953071795869
+  rotation 2.163543351001638e-17 -2.207265013342785e-18 1 1.9634953071795869
   name "oil barrel(5)"
   height 1.2
   radius 0.4
@@ -1778,7 +1833,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -22.1326 -45.7229 0.5992152000000002
-  rotation -0.00474962976825224 -0.008119802128437865 0.9999557539363727 3.702824507652656e-15
+  rotation -0.0033220230714682236 0.0010165593181702191 0.9999939653667244 3.69926367144421e-15
   name "oil barrel(6)"
   height 1.2
   radius 0.4
@@ -1791,7 +1846,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -48.6853 20.1904 0.5992152000000001
-  rotation -1.2618180779143173e-17 1.1120986373628656e-17 1 3.01069
+  rotation -8.589635389102689e-18 1.0225503320994317e-17 1 3.01069
   name "oil barrel(7)"
   height 1.2
   radius 0.4
@@ -1929,8 +1984,8 @@ Solid {
       size 0.5 0.5 70
     }
     Pioneer3at {
-      translation 142.13998901506696 -14.000000009076615 69.99992932156162
-      rotation -0.735145373189208 0.29127296713027956 -0.6121448675743536 9.15817277538098e-07
+      translation 142.13998900601518 -14.000000008692695 69.99992935226452
+      rotation -0.716867648027105 0.3602370908415102 -0.5969338435657107 9.391543485350908e-07
       name "cctv_robot"
       controller "<extern>"
       controllerArgs [
@@ -1951,8 +2006,8 @@ Solid {
   name "cctv_hub"
 }
 DEF car CitroenCZero {
-  translation 140.822 -20.4767 0.176038
-  rotation 0 0 1 1.57
+  translation 140.832 -19.2185 0.10704
+  rotation 0.002862614898843784 -0.002454521493204608 0.9999928903548166 1.569995375518278
   color 1 0 1
   name "car"
   controller "CarController"
