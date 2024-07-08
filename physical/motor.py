@@ -1,4 +1,4 @@
-from lib.robotAPI.PCA9685 import PCA9685
+from PCA9685 import PCA9685
 
 
 class Motor:
@@ -49,6 +49,12 @@ class Motor:
         else:
             self.pwm.setMotorPwm(4, 4095)
             self.pwm.setMotorPwm(5, 4095)
+
+
+if __name__ == '__main__':
+    motor = Motor()
+    motor.left_upper_wheel(4)
+
 
 
 
