@@ -53,7 +53,10 @@ class Motor:
 
 if __name__ == '__main__':
     motor = Motor()
-    motor.left_upper_wheel(4)
+    while True:
+        motor.left_upper_wheel(4)
+
+        print("SEEEE")
 
 
 

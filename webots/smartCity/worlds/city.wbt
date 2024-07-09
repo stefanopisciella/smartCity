@@ -130,7 +130,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation 0.5773502691896257 -0.5773502691896257 -0.5773502691896257 4.188860715675084
-  position 144.2682916664189 -1.950003676341132 69.6133406192553
+  position 144.26814340326175 -1.9501519334626467 73.25524754417373
   near 1
   follow "car"
   followType "None"
@@ -391,7 +391,7 @@ Solid {
       name "vehicle(3)"
     }
     RangeRoverSportSVRSimple {
-      translation 131.482 24.5349 0.4
+      translation 131.473 9.7049 0.4
       rotation 0 0 1 1.57
       name "vehicle(2)"
     }
@@ -1090,7 +1090,7 @@ GenericTrafficLight {
   startGreen FALSE
   greenTime 10
   redTime 10
-  state "green"
+  state "red"
 }
 CrossRoadsTrafficLight {
   translation 45 -45 0
