@@ -1,5 +1,3 @@
-from abc import ABC
-
 from ParkingM import ParkingManager
 import constants as cns
 
@@ -8,6 +6,13 @@ import requests
 import numpy as np
 import imutils
 import pickle
+import os.path as pt
+import json
+import time
+
+from ultralytics import YOLO
+
+from collections.abc import Iterable
 
 
 class PhysicalParkingManager(ParkingManager):
@@ -32,6 +37,8 @@ class PhysicalParkingManager(ParkingManager):
         # END importing the positions from ParkingStallsPos
 
         self.cctv_camera_img = None
+
+        self.detected_objects = None
 
     def pick_corners(self, element=None):
         self.read_a_single_frame_captured_by_the_cctv_camera()
@@ -94,7 +101,42 @@ class PhysicalParkingManager(ParkingManager):
             pickle.dump(self.stalls, f)
         # END saving the positions in the file
 
+    def detect_and_track_objects(self):
+        model = YOLO(cns.YOLO_MODEL_PATH)
+
+        self.save_a_single_frame_captured_by_the_cctv_camera()
+
+        frame_path = "cctvCamera.jpg"
+
+        while True:
+            if pt.exists(frame_path):
+                img = cv2.imread(frame_path)
+
+                if img is not None:
+                    results = model(frame_path)
+
+                    if isinstance(results[0], Iterable):  # it does this check to avoid an exception rise by the tojson() function
+                        # YOLO has detected at least one object
+                        self.detected_objects = json.loads(results[0].tojson())
+
+                    # DEBUG
+                    # print(results[0].tojson())
+                    # annotated_frame = results[0].plot() # Visualize the results on the frame
+
+                    self.read_a_single_frame_captured_by_the_cctv_camera()  # read the current frame
+                    self.save_a_single_frame_captured_by_the_cctv_camera()  # save the next frame
+
+                    cv2.imshow("CCTV camera", self.cctv_camera_img)
+
+                    if cv2.waitKey(1) == 27:
+                        # the "ESC" button has been pressed
+                        break
+
+            time.sleep(1)  # !!! SLEEP
+
 
 if __name__ == "__main__":
     pm = PhysicalParkingManager(cns.SMARTPHONE_IP_ADDRESS)
 
+    # CHECK
+    pm.detect_and_track_objects()

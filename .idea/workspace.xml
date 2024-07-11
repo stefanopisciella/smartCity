@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e3da2b0d-f2d4-4ee3-b4f0-3b815b30b910" name="Changes" comment="added smartphone_cam_stream.py script">
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+    <list default="true" id="e3da2b0d-f2d4-4ee3-b4f0-3b815b30b910" name="Changes" comment="add the parking stall picker (for the physical part)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/freenove/Server/Motor.py" beforeDir="false" afterPath="$PROJECT_DIR$/freenove/Server/Motor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/physical/ParkingStallsPos" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/physical/PhysicalParkingManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/physical/PhysicalParkingManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/physical/cctvCamera.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/physical/cctvCamera.jpg" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,41 +38,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.CCTVcameraCode.executor": "Run",
-    "Python.CCTVcameraController.executor": "Run",
-    "Python.Freenove.executor": "Run",
-    "Python.Led.executor": "Run",
-    "Python.ParkingManager.executor": "Run",
-    "Python.PhysicalParkingManager.executor": "Run",
-    "Python.aruco_marker.executor": "Run",
-    "Python.inference_on_a_single_frame.executor": "Run",
-    "Python.inference_on_a_video.executor": "Run",
-    "Python.inference_on_webcam_stream.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.main2.executor": "Run",
-    "Python.qr_code.executor": "Run",
-    "Python.smartphone_cam_stream.executor": "Run",
-    "Python.temp.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
-    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
-    "WebServerToolWindowPanel.toolwindow.show.date": "false",
-    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
-    "WebServerToolWindowPanel.toolwindow.show.size": "false",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/stefa/OneDrive/Desktop/webots/smartCity/physical",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.CCTVcameraCode.executor&quot;: &quot;Run&quot;,
+    &quot;Python.CCTVcameraController.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Freenove.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Led.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ParkingManager.executor&quot;: &quot;Run&quot;,
+    &quot;Python.PhysicalParkingManager.executor&quot;: &quot;Run&quot;,
+    &quot;Python.aruco_marker.executor&quot;: &quot;Run&quot;,
+    &quot;Python.inference_on_a_single_frame.executor&quot;: &quot;Run&quot;,
+    &quot;Python.inference_on_a_video.executor&quot;: &quot;Run&quot;,
+    &quot;Python.inference_on_webcam_stream.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.qr_code.executor&quot;: &quot;Run&quot;,
+    &quot;Python.smartphone_cam_stream.executor&quot;: &quot;Run&quot;,
+    &quot;Python.temp.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/stefa/OneDrive/Desktop/webots/smartCity/physical&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\stefa\OneDrive\Desktop\webots\smartCity\physical" />
@@ -235,7 +236,8 @@
       <workItem from="1720460452151" duration="175000" />
       <workItem from="1720460651142" duration="7874000" />
       <workItem from="1720558555159" duration="2651000" />
-      <workItem from="1720632094240" duration="10768000" />
+      <workItem from="1720632094240" duration="11129000" />
+      <workItem from="1720705337487" duration="3172000" />
     </task>
     <task id="LOCAL-00001" summary="increased the sleep time in ParkingManager.py to speed up the simulation">
       <option name="closed" value="true" />
@@ -437,7 +439,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720632607512</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="add the parking stall picker (for the physical part)">
+      <option name="closed" value="true" />
+      <created>1720650430288</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1720650430288</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -478,7 +488,8 @@
     <MESSAGE value="edited a file in the &quot;physical&quot; folder" />
     <MESSAGE value="added aruco_marker.py and qr_code.py" />
     <MESSAGE value="added smartphone_cam_stream.py script" />
-    <option name="LAST_COMMIT_MESSAGE" value="added smartphone_cam_stream.py script" />
+    <MESSAGE value="add the parking stall picker (for the physical part)" />
+    <option name="LAST_COMMIT_MESSAGE" value="add the parking stall picker (for the physical part)" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/smartCity$CCTVcameraController.coverage" NAME="CCTVcameraController Coverage Results" MODIFIED="1720558692918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
@@ -486,14 +497,14 @@
     <SUITE FILE_PATH="coverage/smartCity$aruco_marker.coverage" NAME="aruco_marker Coverage Results" MODIFIED="1720544327040" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/physical" />
     <SUITE FILE_PATH="coverage/smartCity$qr_code.coverage" NAME="qr_code Coverage Results" MODIFIED="1720538680593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/physical" />
     <SUITE FILE_PATH="coverage/smartCity$inference_on_a_single_frame.coverage" NAME="inference_on_a_single_frame Coverage Results" MODIFIED="1718634897354" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/smartCity$main2.coverage" NAME="main2 Coverage Results" MODIFIED="1720650150545" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/physical" />
-    <SUITE FILE_PATH="coverage/smartCity$main.coverage" NAME="main Coverage Results" MODIFIED="1720187640699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/smartCity$main2.coverage" NAME="main2 Coverage Results" MODIFIED="1720650267648" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/physical" />
+    <SUITE FILE_PATH="coverage/smartCity$main.coverage" NAME="main Coverage Results" MODIFIED="1720706059434" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/physical" />
     <SUITE FILE_PATH="coverage/smartCity$temp.coverage" NAME="temp Coverage Results" MODIFIED="1720191460518" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/smartCity$Led.coverage" NAME="Led Coverage Results" MODIFIED="1720458774865" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/freenove/Server" />
     <SUITE FILE_PATH="coverage/smartCity$CCTVcameraCode.coverage" NAME="CCTVcameraCode Coverage Results" MODIFIED="1717772245741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webots/smartCity/controllers/CCTVcameraController" />
     <SUITE FILE_PATH="coverage/smartCity$ParkingManager.coverage" NAME="ParkingManager Coverage Results" MODIFIED="1719936058875" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/smartCity$Freenove.coverage" NAME="Freenove Coverage Results" MODIFIED="1720538673661" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/smartCity$PhysicalParkingManager.coverage" NAME="PhysicalParkingManager Coverage Results" MODIFIED="1720649062495" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/physical" />
+    <SUITE FILE_PATH="coverage/smartCity$PhysicalParkingManager.coverage" NAME="PhysicalParkingManager Coverage Results" MODIFIED="1720709535417" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/physical" />
     <SUITE FILE_PATH="coverage/smartCity$inference_on_webcam_stream.coverage" NAME="inference_on_webcam_stream Coverage Results" MODIFIED="1720545081610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/smartCity$smartphone_cam_stream.coverage" NAME="smartphone_cam_stream Coverage Results" MODIFIED="1720632505674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/smartCity$test.coverage" NAME="test Coverage Results" MODIFIED="1720458759200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/freenove/Server" />
