@@ -16,11 +16,10 @@ from collections.abc import Iterable
 
 
 class PhysicalParkingManager(ParkingManager):
-    def prova(self, element=None):
-        pass
-
     def __init__(self, cctv_camera_ip_address):
         self.cctv_camera_ip_address = cctv_camera_ip_address
+
+        super().__init__()
 
         # START variables used only in click_parking_stall_corners()
         self.parking_stall_corner_num = 0
@@ -36,9 +35,11 @@ class PhysicalParkingManager(ParkingManager):
             self.stalls = []  # creating new empty list
         # END importing the positions from ParkingStallsPos
 
+        """
         self.cctv_camera_img = None
 
         self.detected_objects = None
+        """
 
     def pick_corners(self, element=None):
         self.read_a_single_frame_captured_by_the_cctv_camera()
@@ -47,7 +48,8 @@ class PhysicalParkingManager(ParkingManager):
             # START drawing all parking stalls
             for pos in self.stalls:
                 if 'x2' in pos:  # checking if the field "x2" has already been defined
-                    cv2.rectangle(self.cctv_camera_img, (pos["x1"], pos["y1"]), (pos["x2"], pos["y2"]), (255, 0, 255), 2)
+                    cv2.rectangle(self.cctv_camera_img, (pos["x1"], pos["y1"]), (pos["x2"], pos["y2"]), (255, 0, 255),
+                                  2)
             # END drawing all parking stalls
 
             cv2.imshow("Parking row picker", self.cctv_camera_img)
@@ -115,7 +117,8 @@ class PhysicalParkingManager(ParkingManager):
                 if img is not None:
                     results = model(frame_path)
 
-                    if isinstance(results[0], Iterable):  # it does this check to avoid an exception rise by the tojson() function
+                    if isinstance(results[0],
+                                  Iterable):  # it does this check to avoid an exception rise by the tojson() function
                         # YOLO has detected at least one object
                         self.detected_objects = json.loads(results[0].tojson())
 
@@ -133,6 +136,34 @@ class PhysicalParkingManager(ParkingManager):
                         break
 
             time.sleep(1)  # !!! SLEEP
+
+    def detect_cars(self):
+        self.detected_cars.clear()  # clear detected_cars populated in the previous detection
+
+        for detected_object in self.detected_objects:
+            if detected_object["class"] == 67 and detected_object["confidence"] > self.minimum_confidence_threshold:
+                # the current detected_object is a car
+                self.detected_cars.append(detected_object)
+
+    def draw_car_boxes(self):
+        for car in self.detected_cars:
+            car_box_top_left_corner = (int(car["box"]["x1"]), int(car["box"]["y1"]))
+            cv2.rectangle(self.cctv_camera_img, car_box_top_left_corner,
+                          (int(car["box"]["x2"]), int(car["box"]["y2"])), (255, 0, 0), 2)  # blue rectangle
+
+            # START setting the text properties
+            confidence = "%.2f" % car["confidence"]  # approximation to two decimal places
+
+            position = (int(car["box"]["x1"]), int(car["box"]["y1"] - 5))
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 0.5
+            color = (255, 0, 0)  # blue color
+            thickness = 1  # line thickness
+            # END setting the text properties
+
+            cv2.putText(self.cctv_camera_img, "#" + " Car " + confidence, position, font, font_scale,
+                        color, thickness,
+                        cv2.LINE_AA)  # writing the class of the detected object
 
 
 if __name__ == "__main__":
