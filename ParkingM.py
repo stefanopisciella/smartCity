@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
 
 import cv2
 import pickle
@@ -57,3 +58,27 @@ class ParkingManager(ABC):
 
     def on_message_received(self, client, userdata, msg):
         self.message_queue.put(msg.payload.decode('utf-8'))
+
+    def detect_cars(self):
+        self.detected_cars.clear()  # clear detected_cars populated in the previous detection
+
+        if isinstance(self.detected_objects, Iterable):  # so that self.detected_objects is looped only when is populated
+            for detected_object in self.detected_objects:
+                if detected_object["class"] == 67 and detected_object["confidence"] > self.minimum_confidence_threshold:
+                    # the current detected_object is a car
+                    self.detected_cars.append(detected_object)
+
+    def collect_all_parking_stalls(self):
+        self.occupied_parking_stalls = []
+        self.free_parking_stalls = []
+
+        for stall in self.stalls:
+            current_stall_is_occupied = False
+
+            for car in self.detected_cars:
+                if self.compute_intersection_between_car_box_and_stall_box(car["box"], stall) > 800:  # 800 pixels
+                    self.occupied_parking_stalls.append(stall)
+                    current_stall_is_occupied = True
+
+            if current_stall_is_occupied is False:
+                self.free_parking_stalls.append(stall)

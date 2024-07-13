@@ -185,6 +185,7 @@ deviazione_standard = math.sqrt(varianza)
 
 print(deviazione_standard)
 """
+"""
 import queue
 
 # Create a queue
@@ -197,4 +198,8 @@ q.put("Element 3")
 
 # Print the content of the queue
 print(list(q.queue))
+"""
+a = 5
+b = 2
+print(a / b)
 

@@ -106,28 +106,34 @@ class PhysicalParkingManager(ParkingManager):
     def detect_and_track_objects(self):
         model = YOLO(cns.YOLO_MODEL_PATH)
 
-        self.save_a_single_frame_captured_by_the_cctv_camera()
-
         frame_path = "cctvCamera.jpg"
 
         while True:
+            self.save_a_single_frame_captured_by_the_cctv_camera()
+
             if pt.exists(frame_path):
                 img = cv2.imread(frame_path)
 
                 if img is not None:
                     results = model(frame_path)
 
-                    if isinstance(results[0],
-                                  Iterable):  # it does this check to avoid an exception rise by the tojson() function
+                    # CHECK
+                    print(f"len: {len(results[0].boxes)}")
+
+                    if len(results[0].boxes) >= 1:  # it does this check to avoid an exception rise by the tojson() function
                         # YOLO has detected at least one object
                         self.detected_objects = json.loads(results[0].tojson())
+
+                    self.detect_cars()
+                    self.collect_all_parking_stalls()
+
+                    self.read_a_single_frame_captured_by_the_cctv_camera()  # read the current frame; this line of code can't be moved
+                    self.draw_car_boxes()
+                    self.draw_all_parking_stalls()
 
                     # DEBUG
                     # print(results[0].tojson())
                     # annotated_frame = results[0].plot() # Visualize the results on the frame
-
-                    self.read_a_single_frame_captured_by_the_cctv_camera()  # read the current frame
-                    self.save_a_single_frame_captured_by_the_cctv_camera()  # save the next frame
 
                     cv2.imshow("CCTV camera", self.cctv_camera_img)
 
@@ -136,14 +142,6 @@ class PhysicalParkingManager(ParkingManager):
                         break
 
             time.sleep(1)  # !!! SLEEP
-
-    def detect_cars(self):
-        self.detected_cars.clear()  # clear detected_cars populated in the previous detection
-
-        for detected_object in self.detected_objects:
-            if detected_object["class"] == 67 and detected_object["confidence"] > self.minimum_confidence_threshold:
-                # the current detected_object is a car
-                self.detected_cars.append(detected_object)
 
     def draw_car_boxes(self):
         for car in self.detected_cars:
@@ -161,9 +159,84 @@ class PhysicalParkingManager(ParkingManager):
             thickness = 1  # line thickness
             # END setting the text properties
 
-            cv2.putText(self.cctv_camera_img, "#" + " Car " + confidence, position, font, font_scale,
+            cv2.putText(self.cctv_camera_img, " Car " + confidence, position, font, font_scale,
                         color, thickness,
                         cv2.LINE_AA)  # writing the class of the detected object
+
+    def draw_all_parking_stalls(self):
+        for stall in self.free_parking_stalls:
+            """
+            if self.parking_stall_target is not None and stall["id"] == self.parking_stall_target["id"]:
+                stall_border_color = (255, 0, 255)  # violet
+                stall_border_thickness = 3
+
+                # START marking the parking stall target
+                cv2.putText(self.cctv_camera_img,
+                            "T",
+                            (int(self.parking_stall_target["x2"]), int(self.parking_stall_target["y1"])),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            1,
+                            (255, 0, 255),  # violet
+                            3,
+                            cv2.LINE_AA)  # writing the "T" mark
+                # END marking the parking stall target
+            else:
+                stall_border_color = (0, 255, 0)  # green
+                stall_border_thickness = 2
+            """
+
+            stall_border_color = (0, 255, 0)  # green
+            stall_border_thickness = 2
+
+            cv2.rectangle(self.cctv_camera_img, (stall["x1"], stall["y1"]),
+                          (stall["x2"], stall["y2"]), stall_border_color,
+                          stall_border_thickness)  # green rectangle
+
+            """ debugger for verifying the correctness of the parking stall ids
+            # START setting the text properties
+            position = (int(stall["x1"]), int(stall["y1"]))
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 0.5
+            color = (255, 0, 0)  # blue color
+            thickness = 1  # line thickness
+            # END setting the text properties
+
+            cv2.putText(self.cctv_camera_img, str(stall["id"]), position, font, font_scale,
+                        color, thickness,
+                        cv2.LINE_AA)
+            """
+
+        for stall in self.occupied_parking_stalls:
+            cv2.rectangle(self.cctv_camera_img, (stall["x1"], stall["y1"]),
+                          (stall["x2"], stall["y2"]), (0, 0, 255), 2)  # red rectangle
+
+            """ debugger for verifying the correctness of the parking stall ids
+            # START setting the text properties
+            position = (int(stall["x1"]), int(stall["y1"]))
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 0.5
+            color = (255, 0, 0)  # blue color
+            thickness = 1  # line thickness
+            # END setting the text properties
+
+            cv2.putText(self.cctv_camera_img, str(stall["id"]), position, font, font_scale,
+                        color, thickness,
+                        cv2.LINE_AA)
+            """
+
+    def compute_intersection_between_car_box_and_stall_box(self, car_box, stall_box):
+        # intersection_x1 and intersection_y1 are the coordinates for the top-left corner of the intersection
+        intersection_x1 = max(car_box["x1"], stall_box["x1"])
+        intersection_y1 = max(car_box["y1"], stall_box["y1"])
+
+        # intersection_x2 and intersection_y2 are the coordinates for the bottom-right corner of the intersection
+        intersection_x2 = min(car_box["x2"], stall_box["x2"])
+        intersection_y2 = min(car_box["y2"], stall_box["y2"])
+
+        intersection_area = max(0, intersection_x2 - intersection_x1 + 1) * max(0,
+                                                                                intersection_y2 - intersection_y1 + 1)
+
+        return intersection_area
 
 
 if __name__ == "__main__":
