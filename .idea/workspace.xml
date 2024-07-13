@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e3da2b0d-f2d4-4ee3-b4f0-3b815b30b910" name="Changes" comment="added inference_on_stream_captured_by_smartphone.py script">
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+    <list default="true" id="e3da2b0d-f2d4-4ee3-b4f0-3b815b30b910" name="Changes" comment="now the car and parking stalls bounding boxes are visible">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ParkingM.py" beforeDir="false" afterPath="$PROJECT_DIR$/ParkingM.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/freenove/Server/Motor.py" beforeDir="false" afterPath="$PROJECT_DIR$/freenove/Server/Motor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/physical/PhysicalParkingManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/physical/PhysicalParkingManager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/physical/cctvCamera.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/physical/cctvCamera.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -243,7 +239,7 @@
       <workItem from="1720705337487" duration="4341000" />
       <workItem from="1720789773439" duration="14785000" />
       <workItem from="1720858433389" duration="5514000" />
-      <workItem from="1720870762446" duration="6846000" />
+      <workItem from="1720870762446" duration="9927000" />
     </task>
     <task id="LOCAL-00001" summary="increased the sleep time in ParkingManager.py to speed up the simulation">
       <option name="closed" value="true" />
@@ -477,7 +473,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720793752249</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="now the car and parking stalls bounding boxes are visible">
+      <option name="closed" value="true" />
+      <created>1720882455546</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1720882455546</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -495,7 +499,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="now the car can turn in to its right" />
     <MESSAGE value="now the car can turn 90 degrees to its right precisely" />
     <MESSAGE value="now the car can inform the CCTV camera when it finishes the maneuver" />
     <MESSAGE value="now the car can reach a target also when moving parallel to x-axis" />
@@ -520,7 +523,8 @@
     <MESSAGE value="added the inference functionality on the images captured by the smartphone" />
     <MESSAGE value="added common instance variables between PhysicalParkingManager.py and VirtualParkingManager.py in ParkingManager.py" />
     <MESSAGE value="added inference_on_stream_captured_by_smartphone.py script" />
-    <option name="LAST_COMMIT_MESSAGE" value="added inference_on_stream_captured_by_smartphone.py script" />
+    <MESSAGE value="now the car and parking stalls bounding boxes are visible" />
+    <option name="LAST_COMMIT_MESSAGE" value="now the car and parking stalls bounding boxes are visible" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -547,7 +551,7 @@
     <SUITE FILE_PATH="coverage/smartCity$CCTVcameraCode.coverage" NAME="CCTVcameraCode Coverage Results" MODIFIED="1717772245741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webots/smartCity/controllers/CCTVcameraController" />
     <SUITE FILE_PATH="coverage/smartCity$ParkingManager.coverage" NAME="ParkingManager Coverage Results" MODIFIED="1719936058875" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/smartCity$Freenove.coverage" NAME="Freenove Coverage Results" MODIFIED="1720538673661" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/smartCity$PhysicalParkingManager.coverage" NAME="PhysicalParkingManager Coverage Results" MODIFIED="1720882227313" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/physical" />
+    <SUITE FILE_PATH="coverage/smartCity$PhysicalParkingManager.coverage" NAME="PhysicalParkingManager Coverage Results" MODIFIED="1720885504049" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/physical" />
     <SUITE FILE_PATH="coverage/smartCity$inference_on_webcam_stream.coverage" NAME="inference_on_webcam_stream Coverage Results" MODIFIED="1720545081610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/smartCity$smartphone_cam_stream.coverage" NAME="smartphone_cam_stream Coverage Results" MODIFIED="1720632505674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/smartCity$test.coverage" NAME="test Coverage Results" MODIFIED="1720458759200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/freenove/Server" />
