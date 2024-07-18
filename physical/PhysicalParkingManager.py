@@ -35,11 +35,8 @@ class PhysicalParkingManager(ParkingManager):
             self.stalls = []  # creating new empty list
         # END importing the positions from ParkingStallsPos
 
-        """
-        self.cctv_camera_img = None
-
+        # self.cctv_camera_img = None
         self.detected_objects = None
-        """
 
     def pick_corners(self, element=None):
         self.read_a_single_frame_captured_by_the_cctv_camera()
@@ -52,12 +49,12 @@ class PhysicalParkingManager(ParkingManager):
                                   2)
             # END drawing all parking stalls
 
-            cv2.imshow("Parking row picker", self.cctv_camera_img)
-            cv2.setMouseCallback("Parking row picker", self.click_parking_stall_corners)
+            cv2.imshow("Parking stall picker", self.cctv_camera_img)
+            cv2.setMouseCallback("Parking stall picker", self.click_parking_stall_corners)
 
             if cv2.waitKey(1) == 27:
                 # the "ESC" has been pressed => stop the execution of this script
-                cv2.destroyWindow("Parking row picker")
+                cv2.destroyWindow("Parking stall picker")
                 return
 
     def save_a_single_frame_captured_by_the_cctv_camera(self):
@@ -108,6 +105,8 @@ class PhysicalParkingManager(ParkingManager):
 
         frame_path = "cctvCamera.jpg"
 
+        number_of_times_the_parking_stall_has_been_identified_as_free = 0
+
         while True:
             self.save_a_single_frame_captured_by_the_cctv_camera()
 
@@ -117,15 +116,27 @@ class PhysicalParkingManager(ParkingManager):
                 if img is not None:
                     results = model(frame_path)
 
-                    # CHECK
-                    print(f"len: {len(results[0].boxes)}")
-
+                    self.detected_objects = None  # it clears it for deleting all the detection of the previous inference so that they
+                    # don't interfere with the current inference
                     if len(results[0].boxes) >= 1:  # it does this check to avoid an exception rise by the tojson() function
                         # YOLO has detected at least one object
                         self.detected_objects = json.loads(results[0].tojson())
 
                     self.detect_cars()
                     self.collect_all_parking_stalls()
+
+                    if self.there_is_a_free_parking_stall():
+                        number_of_times_the_parking_stall_has_been_identified_as_free += 1
+
+                        if number_of_times_the_parking_stall_has_been_identified_as_free == 10:
+                            self.send_go_forward()
+
+                            # CHECK
+                            time.sleep(
+                                cns.TIME_DURATION_TO_REACH_THE_TARGET + 5)  # wait that the car reaches the parking stall
+                            exit()
+                    else:
+                        print("THE PARKING STALL IS STILL OCCUPIED")
 
                     self.read_a_single_frame_captured_by_the_cctv_camera()  # read the current frame; this line of code can't be moved
                     self.draw_car_boxes()
@@ -237,6 +248,14 @@ class PhysicalParkingManager(ParkingManager):
                                                                                 intersection_y2 - intersection_y1 + 1)
 
         return intersection_area
+
+    def there_is_a_free_parking_stall(self):
+        return self.free_parking_stalls is not None and len(
+            self.free_parking_stalls) == 1  # I am assuming that there is only one stall in the parking
+
+    def send_go_forward(self):
+        self.mqtt.publish_message("FORWARD")
+        print("sent message content: FORWARD")
 
 
 if __name__ == "__main__":
